@@ -114,6 +114,7 @@ main {
     display: flex;
     width: 100%;  /* 3 imágenes → 300% del contenedor */
     animation: mover 9s infinite;
+
 }
 
 .carrusel-css .slides img {

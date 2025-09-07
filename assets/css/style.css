@@ -1,7 +1,9 @@
 /*
     Separe todo en orden porque si no me mareaba
     al buscar lo que necesitaba editar y cosas
-    
+
+    esta todo con notes para que no olvidemos que es cada cosa
+    (Yo Alan lo olvidaria)
 */
 
 
@@ -9,7 +11,7 @@
    Estilos Globales
 */
 body {
-  font-family: 'Roboto', sans-serif; /* tipografía legible */
+  font-family: 'Roboto', sans-serif; /* tipografia */
   background-color: #000000;         /* fondo negro moderno */
   color: #FFFFFF;                    /* texto principal blanco */
   margin: 0;                          /* quitar margen por defecto */
@@ -97,6 +99,37 @@ main {
 .texto-secundario {
   color: #D3D3D3;
   font-size: 0.9rem;
+}
+
+/* Carrusel básico */
+.carrusel-css {
+    width: 676px;      
+    height: 423px;
+    margin: 40px auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.carrusel-css .slides {
+    display: flex;
+    width: 100%;  /* 3 imágenes → 300% del contenedor */
+    animation: mover 9s infinite;
+}
+
+.carrusel-css .slides img {
+    width: 100%;              /* cada imagen ocupa 100% del contenedor visible */
+    flex-shrink: 0;
+    object-fit: contain;       /* cambia cover → contain para que se vea completa */
+    /* opcional: agregar background para que se vea uniforme si hay espacio */
+    background-color: #000;
+}
+
+/* Animación */
+@keyframes mover {
+    0% { transform: translateX(0%); }
+    33% { transform: translateX(-100%); }
+    66% { transform: translateX(-200%); }
+    100% { transform: translateX(0%); }
 }
 
 /* 

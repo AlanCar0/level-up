@@ -1,0 +1,110 @@
+/*
+    Separe todo en orden porque si no me mareaba
+    al buscar lo que necesitaba editar y cosas
+    
+*/
+
+
+/*
+   Estilos Globales
+*/
+body {
+  font-family: 'Roboto', sans-serif; /* tipografía legible */
+  background-color: #000000;         /* fondo negro moderno */
+  color: #FFFFFF;                    /* texto principal blanco */
+  margin: 0;                          /* quitar margen por defecto */
+  padding: 0;
+}
+
+/* 
+   Header y Título
+ */
+header {
+  background-color: #1E90FF;         /* azul eléctrico */
+  padding: 20px 0;                   /* espacio arriba y abajo */
+  text-align: center;                /* centra contenido horizontalmente */
+}
+
+header h1 {
+  font-family: 'Orbitron', sans-serif; /* fuente futurista */
+  color: #FFFFFF;
+  margin: 0;
+  font-size: 2.5rem;                 /* tamaño grande para resaltar */
+}
+
+/* 
+   Menú de Navegación
+*/
+nav ul {
+  list-style: none;                   /* quitar puntos de la lista */
+  display: flex;                      /* organizar horizontalmente */
+  gap: 30px;                          /* espacio entre enlaces */
+  justify-content: center;            /* centrar menú */
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+nav ul li a {
+  text-decoration: none;             /* quitar subrayado */
+  color: #39FF14;                    /* verde neón */
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  transition: all 0.3s ease;         /* animaciones suaves */
+}
+
+nav ul li a:hover {
+  background-color: #39FF14;         /* verde neón al pasar mouse */
+  color: #000000;                     /* texto negro sobre verde */
+  transform: scale(1.1);              /* efecto zoom */
+  box-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14; /* resplandor */
+}
+
+/*
+   Main
+*/
+main {
+  display: flex;                     
+  flex-direction: column;            /* apila secciones verticalmente */
+  align-items: center;               /* centra horizontalmente */
+  justify-content: center;           /* centra verticalmente */
+  text-align: center;                /* centra texto de hijos */
+  gap: 20px;                         /* espacio entre secciones */
+  padding: 20px;
+}
+
+/* 
+   Productos
+ */
+.producto {
+  border: 2px solid #39FF14;
+  margin: 20px;
+  padding: 15px;
+  text-align: center;
+  border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.producto:hover {
+  transform: translateY(-10px);       /* ligero movimiento hacia arriba */
+  box-shadow: 0 0 15px #39FF14, 0 0 25px #1E90FF; /* resplandor gamer */
+}
+
+/* 
+   Texto Secundario
+*/
+.texto-secundario {
+  color: #D3D3D3;
+  font-size: 0.9rem;
+}
+
+/* 
+   Footer
+*/
+footer {
+  background-color: #111;
+  text-align: center;
+  padding: 20px;
+  color: #FFFFFF;
+}

@@ -1,4 +1,4 @@
-ajustes-inicio
+
 // Abrir y cerrar popup
 const openPopupBtn = document.getElementById("openPopupBtn");
 const closePopupBtn = document.getElementById("closePopupBtn");
@@ -47,7 +47,7 @@ form.addEventListener("submit", function(e) {
     return;
   }
 
-  const regexMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const regexMail = "/^[^\s@]+@[^\s@]+\.[^\s@]+$/";
   if (!regexMail.test(email)) {
     alert("❌ Correo inválido");
     return;
@@ -58,6 +58,9 @@ form.addEventListener("submit", function(e) {
   form.reset();
 });
   
+
+
+
 const listaCarrito = document.getElementById('lista-carrito');
 const totalCarrito = document.getElementById('total');
 const contenedorCarrito = document.getElementById('carrito');

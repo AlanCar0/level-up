@@ -9,7 +9,31 @@
     
 </head>
 
-<body>  
+<body> 
+        <button id="openPopupBtn" class="btn-open-popup">Registrarse</button>
+
+        <!-- Popup con clase rgform -->
+        <div id="popupOverlay" class="overlay">
+            <div class="rgform">
+                <button id="closePopupBtn" class="btn-close-popup" aria-label="Cerrar popup">&times;</button>
+                <h2>Formulario de Registro</h2>
+                <form id="registroForm" novalidate>
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" required>
+
+                    <label for="rut">RUT:</label>
+                    <input type="text" id="rut" name="rut" placeholder="12345678-9" required>
+
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required>
+
+                    <label for="numero">Número:</label>
+                    <input type="tel" id="numero" name="numero" placeholder="+56 9 1234 5678" required>
+
+                    <button type="submit" class="btn-submit">Enviar</button>
+                </form>
+            </div>
+        </div> 
     <header>
         <h1 class="titulo">🎮 Leve-Up Gamer 👾</h1>
         <nav>
@@ -51,6 +75,11 @@
             <iframe width="560" height="315" src="https://www.youtube.com/embed/TU_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
         </section>
         -->
+        <footer>
+            <p>© 2025 - Level-Up Gamer | Equipo FullStack 2 | Alan - Kareem</p>
+        </footer>
     </main>
+     <script src="assets/js/script.js"></script>
 
 </body>
+</html>

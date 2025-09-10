@@ -12,7 +12,7 @@ closePopupBtn.addEventListener("click", () => {
     overlay.style.display = "none";
 });
 
-// Validar RUT chileno
+// Validar RUT 
 function validarRut(rut) {
     rut = rut.replace(/\./g, '').replace(/-/g, '');
     if (rut.length < 8) return false;
@@ -47,7 +47,7 @@ form.addEventListener("submit", function(e) {
         return;
     }
 
-    const regexMail = "/^[^\s@]+@[^\s@]+\.[^\s@]+$/";
+    const regexMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regexMail.test(email)) {
         alert("❌ Correo inválido");
         return;

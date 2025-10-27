@@ -1,27 +1,97 @@
-import React from "react";
-import "../src/css/style.css"; // Asegúrate de que el CSS esté en esta ruta
+import React, { useState } from "react";
+import "./css/style.css";
+
+import inicio1 from "./img/inicio1.png";
+import inicio2 from "./img/inicio2.png";
+import inicio3 from "./img/inicio3.png";
+import { validarCorreo, validarRut } from "./utils/validarRut.js";
 
 function App() {
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    rut: "",
+    email: "",
+    numero: "",
+  });
+
+  const openPopup = () => setPopupVisible(true);
+  const closePopup = () => setPopupVisible(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { nombre, rut, email, numero } = formData;
+
+    if (!nombre.trim()) {
+      alert("Por favor, ingrese su nombre.");
+      return;
+    }
+
+    if (!validarRut(rut)) {
+      alert("Por favor, ingrese un RUT válido.");
+      return;
+    }
+
+    if (!validarCorreo(email)) {
+      alert("Por favor, ingrese un correo electrónico válido.");
+      return;
+    }
+
+    if (!numero.trim()) {
+      alert("Por favor, ingrese su número.");
+      return;
+    }
+
+    alert("Formulario enviado con éxito.");
+    setFormData({
+      nombre: "",
+      rut: "",
+      email: "",
+      numero: "",
+    });
+    closePopup();
+  };
+
   return (
     <>
-      {/* Botón y formulario emergente */}
-      <button id="openPopupBtn" className="btn-open-popup">
+      {/* Botón para abrir popup */}
+      <button onClick={openPopup} className="btn-open-popup">
         Registrarse
       </button>
 
-      <div id="popupOverlay" className="overlay">
+      {/* Popup */}
+      <div
+        id="popupOverlay"
+        className={`overlay ${popupVisible ? "active" : ""}`}
+        onClick={(e) => e.currentTarget === e.target && closePopup()}
+      >
         <div className="rgform">
           <button
-            id="closePopupBtn"
+            onClick={closePopup}
             className="btn-close-popup"
             aria-label="Cerrar popup"
           >
             &times;
           </button>
           <h2>Formulario de Registro</h2>
-          <form id="registroForm" noValidate>
+          <form id="registroForm" noValidate onSubmit={handleSubmit}>
             <label htmlFor="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required />
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              required
+              value={formData.nombre}
+              onChange={handleChange}
+            />
 
             <label htmlFor="rut">RUT:</label>
             <input
@@ -30,6 +100,8 @@ function App() {
               name="rut"
               placeholder="12345678-9"
               required
+              value={formData.rut}
+              onChange={handleChange}
             />
 
             <label htmlFor="email">Correo Electrónico:</label>
@@ -39,6 +111,8 @@ function App() {
               name="email"
               placeholder="ejemplo@correo.com"
               required
+              value={formData.email}
+              onChange={handleChange}
             />
 
             <label htmlFor="numero">Número:</label>
@@ -48,6 +122,8 @@ function App() {
               name="numero"
               placeholder="+56 9 1234 5678"
               required
+              value={formData.numero}
+              onChange={handleChange}
             />
 
             <button type="submit" className="btn-submit">
@@ -73,9 +149,9 @@ function App() {
       <main>
         <section className="carrusel-css">
           <div className="slides">
-            <img src="../src/img/inicio1.png" alt="Producto 1" />
-            <img src="../src/img/inicio2.png" alt="Producto 2" />
-            <img src="../src/img/inicio3.png" alt="Producto 3" />
+            <img src={inicio1} alt="Producto 1" />
+            <img src={inicio2} alt="Producto 2" />
+            <img src={inicio3} alt="Producto 3" />
           </div>
         </section>
 

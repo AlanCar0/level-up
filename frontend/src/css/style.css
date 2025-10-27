@@ -6,7 +6,6 @@
     (Yo Alan lo olvidaria)
 */
 
-
 /*
    Estilos Globales
 */
@@ -29,7 +28,6 @@ header {
   display: flex;               /* activa flexbox */
   justify-content: space-between; /* menú a la izquierda, botón a la derecha */
   align-items: center;
-
 }
 
 header h1 {
@@ -120,14 +118,12 @@ main {
     display: flex;
     width: 100%;  /* 3 imágenes → 300% del contenedor */
     animation: mover 9s infinite;
-
 }
 
 .carrusel-css .slides img {
     width: 100%;              /* cada imagen ocupa 100% del contenedor visible */
     flex-shrink: 0;
     object-fit: contain;       /* cambia cover → contain para que se vea completa */
-    /* opcional: agregar background para que se vea uniforme si hay espacio */
     background-color: #000;
 }
 
@@ -148,10 +144,10 @@ footer {
   padding: 20px;
   color: #FFFFFF;
 }
+
 /*
   Contacto
 */
-
 section.info-contacto{
   text-decoration: none;             /* quitar subrayado */
   color: #39FF14;                    /* verde neón */
@@ -170,7 +166,6 @@ section.info-contacto ul {
 /*
   Formulario
 */
-
 section.ctform{
   vertical-align: top;
   display: flex;
@@ -178,7 +173,7 @@ section.ctform{
 
 /* ---------------- Overlay ---------------- */
 .overlay {
-  display: none;
+  display: none;                     /* oculto por defecto */
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -186,6 +181,11 @@ section.ctform{
   justify-content: center;
   align-items: center;
   z-index: 1000;
+}
+
+/* Mostrar overlay al activarlo */
+.overlay.active {
+  display: flex;
 }
 
 /* ---------------- Formulario (rgform) ---------------- */
@@ -222,6 +222,7 @@ section.ctform{
   outline: none;
 }
 
+/* Botón abrir popup */
 .btn-open-popup {
   margin: 10px;
   margin-right: 20px;
@@ -232,13 +233,13 @@ section.ctform{
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-
 }
 .btn-open-popup:hover {
   background: #39FF14;
   color: #000;
 }
 
+/* Botón enviar formulario */
 .btn-submit {
   margin-top: 15px;
   padding: 12px;
@@ -255,6 +256,7 @@ section.ctform{
   color: #000;
 }
 
+/* Botón cerrar popup */
 .btn-close-popup {
   position: absolute;
   top: 10px; right: 15px;

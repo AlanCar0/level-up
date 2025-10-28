@@ -12,37 +12,6 @@ const Home = () => {
   }, []);
 
   const initializePopups = () => {
-    // Popup de Registro
-    const openPopupBtn = document.getElementById('openPopupBtn');
-    const closePopupBtn = document.getElementById('closePopupBtn');
-    const popupOverlay = document.getElementById('popupOverlay');
-    const registroForm = document.getElementById('registroForm');
-
-    if (openPopupBtn && popupOverlay) {
-      openPopupBtn.onclick = function() {
-        popupOverlay.style.display = 'flex';
-      };
-
-      closePopupBtn.onclick = function() {
-        popupOverlay.style.display = 'none';
-      };
-
-      popupOverlay.onclick = function(e) {
-        if (e.target === popupOverlay) {
-          popupOverlay.style.display = 'none';
-        }
-      };
-    }
-
-    if (registroForm) {
-      registroForm.onsubmit = function(e) {
-        e.preventDefault();
-        alert('Formulario enviado correctamente!');
-        popupOverlay.style.display = 'none';
-        registroForm.reset();
-      };
-    }
-
     // Popup del Carrito (si existe)
     const cartPopup = document.getElementById('cartPopup');
     const closeCartBtn = document.getElementById('closeCartBtn');
@@ -71,58 +40,6 @@ const Home = () => {
 
   return (
     <>
-      {/* Botón y formulario emergente de Registro */}
-      <button id="openPopupBtn" className="btn-open-popup">
-        Registrarse
-      </button>
-
-      <div id="popupOverlay" className="overlay">
-        <div className="rgform">
-          <button
-            id="closePopupBtn"
-            className="btn-close-popup"
-            aria-label="Cerrar popup"
-          >
-            &times;
-          </button>
-          <h2>Formulario de Registro</h2>
-          <form id="registroForm" noValidate>
-            <label htmlFor="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required />
-
-            <label htmlFor="rut">RUT:</label>
-            <input
-              type="text"
-              id="rut"
-              name="rut"
-              placeholder="12345678-9"
-              required
-            />
-
-            <label htmlFor="email">Correo Electrónico:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="ejemplo@correo.com"
-              required
-            />
-
-            <label htmlFor="numero">Número:</label>
-            <input
-              type="tel"
-              id="numero"
-              name="numero"
-              placeholder="+56 9 1234 5678"
-              required
-            />
-
-            <button type="submit" className="btn-submit">
-              Enviar
-            </button>
-          </form>
-        </div>
-      </div>
 
       {/* Header */}
       <header>
@@ -135,6 +52,14 @@ const Home = () => {
           </ul>
         </nav>
       </header>
+          {/* Botón de Registro que redirige a /register */}
+      <button 
+        id="openPopupBtn" 
+        className="btn-open-popup"
+        onClick={() => { window.location.href = '/register'; }}
+      >
+        Registrarse
+      </button>
 
       {/* Main content */}
       <main>

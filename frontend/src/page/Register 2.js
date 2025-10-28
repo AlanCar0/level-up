@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { validarRut, validarCorreo } from '../utils/validarRut.js';
+import { useNavigate } from 'react-router-dom';
 import '../css/style.css';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nombre: '',
     rut: '',
     email: '',
     numero: '',
   });
-
-  const [showPopup, setShowPopup] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -49,38 +49,60 @@ const Register = () => {
 
     alert('Usuario registrado correctamente!');
     setFormData({ nombre: '', rut: '', email: '', numero: '' });
-    setShowPopup(false);
+    navigate('/login');
   };
 
   return (
-    <>
-      <button onClick={() => setShowPopup(true)}>Registrarse</button>
+    <div className="rgform">
+      {/* Formulario */}
+      <form onSubmit={handleSubmit}>
+        <h2>Registro</h2>
 
-      {showPopup && (
-        <div className="overlay">
-          <div className="rgform">
-            <button className="close" onClick={() => setShowPopup(false)}>X</button>
-            <form onSubmit={handleSubmit}>
-              <h2>Registro</h2>
+        <label htmlFor="nombre">Nombre:</label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          value={formData.nombre}
+          onChange={handleChange}
+          required
+        />
 
-              <label htmlFor="nombre">Nombre:</label>
-              <input type="text" id="nombre" name="nombre" value={formData.nombre} onChange={handleChange} />
+        <label htmlFor="rut">RUT:</label>
+        <input
+          type="text"
+          id="rut"
+          name="rut"
+          value={formData.rut}
+          onChange={handleChange}
+          required
+        />
 
-              <label htmlFor="rut">RUT:</label>
-              <input type="text" id="rut" name="rut" value={formData.rut} onChange={handleChange} />
+        <label htmlFor="email">Correo:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
 
-              <label htmlFor="email">Correo:</label>
-              <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} />
+        <label htmlFor="numero">Número:</label>
+        <input
+          type="text"
+          id="numero"
+          name="numero"
+          value={formData.numero}
+          onChange={handleChange}
+          required
+        />
 
-              <label htmlFor="numero">Número:</label>
-              <input type="text" id="numero" name="numero" value={formData.numero} onChange={handleChange} />
-
-              <button type="submit" className="btn-submit">Enviar</button>
-            </form>
-          </div>
-        </div>
-      )}
-    </>
+        <button type="submit" className="btn-submit">
+          Registrarse
+        </button>
+      </form>
+    </div>
   );
 };
 

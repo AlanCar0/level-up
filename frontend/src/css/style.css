@@ -10,11 +10,16 @@
    Estilos Globales
 */
 body {
-  font-family: 'Roboto', sans-serif; /* tipografia */
-  background-color: #000000;         /* fondo negro moderno */
-  color: #FFFFFF;                    /* texto principal blanco */
-  margin: 0;                          /* quitar margen por defecto */
+  font-family: 'Roboto', sans-serif;
+  background-color: #000000;
+  color: #FFFFFF;
+  margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 /* 
@@ -72,13 +77,15 @@ nav ul li a:hover {
    Main
 */
 main {
-  display: flex;                     
-  flex-direction: column;            /* apila secciones verticalmente */
-  align-items: center;               /* centra horizontalmente */
-  justify-content: center;           /* centra verticalmente */
-  text-align: center;                /* centra texto de hijos */
-  gap: 20px;                         /* espacio entre secciones */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
   padding: 20px;
+  flex: 1;
+  width: 100%;
 }
 
 /* 
@@ -326,86 +333,84 @@ section.ctform{
 
 /* ---------------- Formulario (rgform) ---------------- */
 .rgform {
-  background: #000;
+  background: linear-gradient(145deg, #0a0a0a, #111); /* fondo con degradado sutil */
   color: #fff;
-  padding: 25px;
-  border-radius: 12px;
-  width: 350px;
-  font-family: 'Roboto', sans-serif;
-  position: relative;
-  box-shadow: 0 0 20px #1E90FF;
+  padding: 40px 35px;
+  border-radius: 16px;
+  width: 380px;
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 25px #1E90FF, 0 0 10px #39FF14;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #39FF14;
+  transition: all 0.4s ease;
+}
+
+.rgform:hover {
+  box-shadow: 0 0 35px #39FF14, 0 0 15px #1E90FF;
+  transform: scale(1.02);
 }
 
 .rgform h2 {
-  font-family: 'Orbitron', sans-serif;
-  margin-bottom: 15px;
+  font-size: 1.8rem;
   color: #39FF14;
+  text-shadow: 0 0 10px #39FF14;
+  margin-bottom: 25px;
+  text-align: center;
 }
 
 .rgform label {
-  display: block;
-  text-align: left;
+  align-self: flex-start;
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 0.95rem;
+  color: #1E90FF;
+  font-weight: bold;
 }
 
 .rgform input {
   width: 100%;
-  padding: 10px;
+  padding: 10px 12px;
   margin-top: 5px;
-  border: none;
-  border-radius: 6px;
+  margin-bottom: 10px;
+  border: 2px solid #1E90FF;
+  border-radius: 8px;
+  background: #000;
+  color: #fff;
+  font-size: 1rem;
   outline: none;
+  transition: all 0.3s ease;
+  font-family: 'Roboto', sans-serif;
 }
 
-/* Botón abrir popup */
-.btn-open-popup {
-  margin: 10px;
-  margin-right: 20px;
-  padding: 12px 20px;
-  background: #1E90FF;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-}
-.btn-open-popup:hover {
-  background: #39FF14;
-  color: #000;
+.rgform input:focus {
+  border-color: #39FF14;
+  box-shadow: 0 0 10px #39FF14;
 }
 
 /* Botón enviar formulario */
 .btn-submit {
-  margin-top: 15px;
+  margin-top: 20px;
   padding: 12px;
   width: 100%;
   border: none;
-  border-radius: 6px;
-  background: #1E90FF;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-}
-.btn-submit:hover {
-  background: #39FF14;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #1E90FF, #39FF14);
   color: #000;
-}
-
-/* Botón cerrar popup */
-.btn-close-popup {
-  position: absolute;
-  top: 10px; right: 15px;
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 24px;
   cursor: pointer;
-}
-.btn-close-popup:hover {
-  color: #39FF14;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  font-family: 'Orbitron', sans-serif;
 }
 
+.btn-submit:hover {
+  background: linear-gradient(90deg, #39FF14, #1E90FF);
+  box-shadow: 0 0 15px #39FF14, 0 0 25px #1E90FF;
+  transform: scale(1.05);
+}
 /* ========== ESTILOS DEL CARRITO CON STOCK ========== */
 
 /* Botón del carrito en header */
@@ -605,35 +610,41 @@ section.ctform{
   gap: 1rem;
 }
 
+/* BOTONES DE AUTENTICACIÓN ESTILO NEÓN */
 .btn-login, .btn-register {
   padding: 0.7rem 1.5rem;
   border: none;
-  border-radius: 5px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  text-transform: uppercase;
 }
 
 .btn-login {
-  background-color: #4a90e2;
-  color: white;
+  background: linear-gradient(90deg, #1E90FF, #39FF14);
+  color: #000;
 }
 
 .btn-login:hover {
-  background-color: #3a7bc8;
-  transform: translateY(-2px);
+  background: linear-gradient(90deg, #39FF14, #1E90FF);
+  color: #000;
+  box-shadow: 0 0 15px #39FF14, 0 0 25px #1E90FF;
+  transform: scale(1.05);
 }
 
 .btn-register {
-  background-color: #f39c12;
-  color: white;
+  background: linear-gradient(90deg, #f39c12, #ffdd00);
+  color: #000;
 }
 
 .btn-register:hover {
-  background-color: #e67e22;
-  transform: translateY(-2px);
+  background: linear-gradient(90deg, #ffdd00, #f39c12);
+  color: #000;
+  box-shadow: 0 0 15px #ffdd00, 0 0 25px #f39c12;
+  transform: scale(1.05);
 }
 
 .user-info {
@@ -759,4 +770,29 @@ section.ctform{
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
+}
+
+/* Animación de aparición y efecto neón pulsante */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 25px #1E90FF, 0 0 10px #39FF14;
+  }
+  50% {
+    box-shadow: 0 0 35px #39FF14, 0 0 20px #1E90FF;
+  }
+}
+
+.rgform {
+  animation: fadeInUp 0.8s ease, neonPulse 2s infinite alternate;
 }

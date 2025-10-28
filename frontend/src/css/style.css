@@ -1523,3 +1523,51 @@ section.ctform{
     right: 8px;
   }
 }
+
+/* ========== HEADER RIGHT SECTION ========== */
+.header-right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+/* Ajustes para los botones de autenticación en el header */
+.header-right-section .auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.header-right-section .btn-login,
+.header-right-section .btn-register {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+/* Ajustes responsive para el header */
+@media (max-width: 768px) {
+  .header-right-section {
+    align-items: center;
+    width: 100%;
+  }
+  
+  .header-right-section .auth-buttons {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .header-right-section .btn-login,
+  .header-right-section .btn-register {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-right-section .btn-login,
+  .header-right-section .btn-register {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}

@@ -51,15 +51,26 @@ const Home = () => {
             <li><a href="/contacto">Contacto</a></li>
           </ul>
         </nav>
+        
+        {/* Contenedor para botones de autenticación */}
+        <div className="auth-buttons">
+          {/* Botón de Inicio de Sesión */}
+          <button 
+            className="btn-login"
+            onClick={() => { window.location.href = '/login'; }}
+          >
+            🔐 Iniciar Sesión
+          </button>
+          
+          {/* Botón de Registro */}
+          <button 
+            className="btn-register"
+            onClick={() => { window.location.href = '/register'; }}
+          >
+            🎯 Registrarse
+          </button>
+        </div>
       </header>
-          {/* Botón de Registro que redirige a /register */}
-      <button 
-        id="openPopupBtn" 
-        className="btn-open-popup"
-        onClick={() => { window.location.href = '/register'; }}
-      >
-        Registrarse
-      </button>
 
       {/* Main content */}
       <main>

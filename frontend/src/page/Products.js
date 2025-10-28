@@ -69,10 +69,7 @@ const Products = () => {
       category: "Juegos",
       stock: 2
     }
-
   ]);
-
-  
 
   // Cargar carrito desde localStorage al iniciar
   useEffect(() => {
@@ -184,8 +181,6 @@ const Products = () => {
     }
 
     alert(`✅ Compra realizada por ${formatPrice(getTotalPrice())}\n¡Gracias por tu compra!`);
-    
-
     setCart([]);
   };
 
@@ -201,13 +196,35 @@ const Products = () => {
           </ul>
         </nav>
         
-        {/* Botón del Carrito */}
-        <button 
-          className="btn-carrito"
-          onClick={() => setIsCartOpen(true)}
-        >
-          🛒 Carrito ({getTotalItems()})
-        </button>
+        {/* Contenedor para carrito y botones de autenticación */}
+        <div className="header-right-section">
+          {/* Botón del Carrito */}
+          <button 
+            className="btn-carrito"
+            onClick={() => setIsCartOpen(true)}
+          >
+            🛒 Carrito ({getTotalItems()})
+          </button>
+          
+          {/* Contenedor para botones de autenticación */}
+          <div className="auth-buttons">
+            {/* Botón de Inicio de Sesión */}
+            <button 
+              className="btn-login"
+              onClick={() => { window.location.href = '/login'; }}
+            >
+              🔐 Iniciar Sesión
+            </button>
+            
+            {/* Botón de Registro */}
+            <button 
+              className="btn-register"
+              onClick={() => { window.location.href = '/register'; }}
+            >
+              🎯 Registrarse
+            </button>
+          </div>
+        </div>
       </header>
 
       <main>

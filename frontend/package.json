@@ -13,12 +13,15 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "karma start",
+  "test:watch": "karma start --auto-watch",
+  "test:coverage": "karma start --coverage",
+  "test:react": "react-scripts test",
+  "eject": "react-scripts eject"
+  }, 
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -36,5 +39,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "jasmine-core": "^5.12.0",
+    "karma": "^6.4.4",
+    "karma-babel-preprocessor": "^8.0.2",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-coverage": "^2.2.1",
+    "karma-jasmine": "^5.1.0"
   }
 }

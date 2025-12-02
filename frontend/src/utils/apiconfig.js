@@ -1,6 +1,4 @@
 
-const IP_EC2 = "44.223.39.137"; 
-
-const API_URL = `http://${IP_EC2}:8080`;
+const API_URL = "http://ec2-98-84-11-88.compute-1.amazonaws.com:8080";
 
 export default API_URL;

@@ -31,6 +31,8 @@ const Login = () => {
     const newErrors = {};
     if (!formData.email.trim()) {
       newErrors.email = 'El correo es obligatorio';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'El correo no es válido';
     }
     if (!formData.password) {
       newErrors.password = 'La contraseña es obligatoria';
@@ -46,30 +48,48 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      // CONEXIÓN AL BACKEND EN AWS
+      console.log("Intentando login en:", `${API_URL}/auth/login`);
+      console.log("Datos enviados:", { email: formData.email, password: formData.password });
+
       const response = await fetch(`${API_URL}/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-              email: formData.email,
-              password: formData.password
-          })
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        })
       });
 
+      console.log("Respuesta status:", response.status);
+      console.log("Respuesta ok:", response.ok);
+
       if (response.ok) {
-          const data = await response.json();
-          // Guardar token y usuario
-          localStorage.setItem('token', data.token || 'token-simulado'); 
-          localStorage.setItem('usuario', JSON.stringify(data));
-          
-          alert("¡Bienvenido " + (data.nombre || "Gamer") + "!");
-          navigate('/productos');
+        const data = await response.json();
+        console.log("Datos recibidos:", data);
+        
+        // Guardar token y usuario
+        localStorage.setItem('token', data.token || 'token-simulado');
+        localStorage.setItem('usuario', JSON.stringify(data));
+        
+        alert(`¡Bienvenido ${data.nombre || "Gamer"}!`);
+        navigate('/productos');
       } else {
-          alert("❌ Credenciales incorrectas");
+        let errorMessage = "Credenciales incorrectas";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData;
+        } catch {
+          const errorText = await response.text();
+          if (errorText) errorMessage = errorText;
+        }
+        alert(`❌ ${errorMessage}`);
       }
     } catch (error) {
-       console.error(error);
-       alert("Error al conectar con el servidor (EC2)");
+      console.error("Error completo:", error);
+      alert(`Error al conectar con el servidor: ${error.message}\n\nVerifica:\n1. Que el backend esté ejecutándose\n2. Que la URL ${API_URL} sea correcta\n3. Que no haya problemas de CORS`);
     } finally {
       setIsSubmitting(false);
     }

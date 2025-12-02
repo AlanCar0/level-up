@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { validarRut, validarCorreo } from '../utils/validarRut.js';
 import { useNavigate } from 'react-router-dom';
-import API_URL from '../utils/apiconfig.js'; // Importación añadida
+import API_URL from '../utils/apiconfig.js';
 import '../css/style.css';
 
 const Register = () => {
@@ -24,7 +24,6 @@ const Register = () => {
       ...formData,
       [name]: value,
     });
-    // Limpiar error del campo cuando el usuario empiece a escribir
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -86,10 +85,21 @@ const Register = () => {
     }
 
     try {
-      // --- INICIO CAMBIO BACKEND ---
+      console.log("Intentando registro en:", `${API_URL}/auth/register`);
+      console.log("Datos enviados:", {
+        nombre: formData.nombre,
+        rut: formData.rut,
+        email: formData.email,
+        numero: formData.numero,
+        password: formData.password
+      });
+
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({
           nombre: formData.nombre,
           rut: formData.rut,
@@ -99,50 +109,56 @@ const Register = () => {
         })
       });
 
+      console.log("Respuesta status:", response.status);
+      console.log("Respuesta ok:", response.ok);
+
       if (response.ok) {
-        alert('🎉 ¡Usuario registrado correctamente en Oracle!\n\nAhora puedes iniciar sesión.');
+        const result = await response.text();
+        alert(`🎉 ${result}\n\nAhora puedes iniciar sesión.`);
         
-        // Resetear formulario
         setFormData({ 
           nombre: '', rut: '', email: '', numero: '', password: '', confirmPassword: ''
         });
         setErrors({});
         
-        // Redirigir al login
         navigate('/login');
       } else {
-        const errorText = await response.text();
-        alert('❌ Error: ' + errorText);
+        let errorMessage = "Error en el registro";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData;
+        } catch {
+          const errorText = await response.text();
+          if (errorText) errorMessage = errorText;
+        }
+        alert(`❌ ${errorMessage}`);
       }
-      // --- FIN CAMBIO BACKEND ---
-
     } catch (error) {
-      console.error(error);
-      alert('❌ Error de conexión con el servidor (EC2).');
+      console.error("Error completo:", error);
+      alert(`❌ Error de conexión con el servidor: ${error.message}\n\nVerifica:\n1. Que el backend esté ejecutándose\n2. Que la URL ${API_URL} sea correcta\n3. Que no haya problemas de CORS`);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const formatRut = (rut) => {
-    // Limpiar RUT
     const cleanRut = rut.replace(/[^0-9kK]/g, '');
     
     if (cleanRut.length <= 1) return cleanRut;
     
-    let formattedRut = cleanRut.slice(-1); // Dígito verificador
+    let formattedRut = cleanRut.slice(-1);
     formattedRut = '-' + formattedRut;
     
     if (cleanRut.length > 1) {
-      formattedRut = cleanRut.slice(-7, -1) + formattedRut; // últimos 6 dígitos del cuerpo
+      formattedRut = cleanRut.slice(-7, -1) + formattedRut;
     }
     
     if (cleanRut.length > 7) {
-      formattedRut = cleanRut.slice(0, -7) + '.' + formattedRut; // millones
+      formattedRut = cleanRut.slice(0, -7) + '.' + formattedRut;
     }
     
     if (cleanRut.length > 10) {
-      formattedRut = cleanRut.slice(0, -10) + '.' + formattedRut; // miles de millones
+      formattedRut = cleanRut.slice(0, -10) + '.' + formattedRut;
     }
     
     return formattedRut;
@@ -164,7 +180,6 @@ const Register = () => {
   return (
     <div className="register-container">
       <div className="register-card">
-        {/* Botón Volver al Inicio */}
         <button 
           className="back-button"
           onClick={() => navigate('/')}
@@ -173,14 +188,12 @@ const Register = () => {
           ← Volver al Inicio
         </button>
 
-        {/* Header del formulario */}
         <div className="register-header">
           <div className="register-icon">🎮</div>
           <h1>Crear Cuenta</h1>
           <p>Únete a la comunidad Level-Up Gamer</p>
         </div>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
             <label htmlFor="nombre" className="form-label">
@@ -310,22 +323,14 @@ const Register = () => {
               className={`submit-btn ${isSubmitting ? 'loading' : ''}`}
               disabled={isSubmitting}
             >
-              {isSubmitting ? (
-                <>
-                  <span className="spinner"></span>
-                  Registrando...
-                </>
-              ) : (
-                '🎯 Crear Cuenta'
-              )}
+              {isSubmitting ? 'Registrando...' : '🎯 Crear Cuenta'}
             </button>
           </div>
         </form>
 
-        {/* Footer del formulario */}
         <div className="register-footer">
           <p>
-            ¿Ya tienes una cuenta?{' '}\n
+            ¿Ya tienes una cuenta?{' '}
             <button 
               type="button" 
               className="link-btn"

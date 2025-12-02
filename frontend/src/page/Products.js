@@ -1,26 +1,108 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import API_URL from '../utils/apiconfig'; // Importamos la config
+import API_URL from '../utils/apiconfig.js'; // Importación añadida
 import "../css/style.css";
 
 const Products = () => {
-  const [products, setProducts] = useState([]); // Empieza vacío, se llena desde AWS
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const navigate = useNavigate();
+  const [products, setProducts] = useState([]); // Ahora inicia vacío
 
-  // 1. CARGAR PRODUCTOS DESDE AWS AL INICIAR
+  // --- INICIO CAMBIO BACKEND: Cargar productos reales ---
   useEffect(() => {
     fetch(`${API_URL}/api/products`)
       .then(res => res.json())
       .then(data => {
-        console.log("Productos cargados:", data);
+        console.log("Productos cargados desde EC2:", data);
         setProducts(data);
       })
       .catch(err => console.error("Error cargando productos:", err));
   }, []);
+  // --- FIN CAMBIO BACKEND ---
 
-  // Formato de moneda CLP
+  // Cargar carrito desde localStorage al iniciar (Tu lógica original)
+  useEffect(() => {
+    const savedCart = localStorage.getItem('levelUpCart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+  // Guardar carrito en localStorage cuando cambie (Tu lógica original)
+  useEffect(() => {
+    localStorage.setItem('levelUpCart', JSON.stringify(cart));
+  }, [cart]);
+
+  // Obtener stock disponible para un producto
+  const getAvailableStock = (productId) => {
+    const product = products.find(p => p.id === productId);
+    const cartItem = cart.find(item => item.id === productId);
+    
+    if (!product) return 0;
+    
+    const stockUsed = cartItem ? cartItem.quantity : 0;
+    return product.stock - stockUsed;
+  };
+
+  const addToCart = (product) => {
+    const availableStock = getAvailableStock(product.id);
+    
+    if (availableStock <= 0) {
+      alert('❌ No hay stock disponible de este producto');
+      return;
+    }
+
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === product.id);
+      if (existingItem) {
+        // Verificar que no exceda el stock
+        if (existingItem.quantity >= product.stock) {
+          alert('❌ Has alcanzado el stock máximo disponible');
+          return prevCart;
+        }
+        return prevCart.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, newQuantity) => {
+    if (newQuantity < 1) {
+      removeFromCart(productId);
+      return;
+    }
+    
+    const product = products.find(p => p.id === productId);
+    if (newQuantity > product.stock) {
+      alert(`❌ Solo hay ${product.stock} unidades disponibles`);
+      return;
+    }
+
+    setCart(prevCart =>
+      prevCart.map(item =>
+        item.id === productId
+          ? { ...item, quantity: newQuantity }
+          : item
+      )
+    );
+  };
+
+  const getTotalItems = () => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
@@ -28,46 +110,14 @@ const Products = () => {
     }).format(price);
   };
 
-  // Agregar al carrito
-  const addToCart = (product) => {
-    if (product.stock <= 0) {
-        alert("Sin stock disponible");
-        return;
-    }
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
-      if (existingItem) {
-        return prevCart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevCart, { ...product, quantity: 1 }];
-    });
-    alert(`Agregado: ${product.name}`);
-  };
-
-  // Eliminar del carrito
-  const removeFromCart = (productId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== productId));
-  };
-
-  // Calcular total
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  // PROCESAR COMPRA (CONECTADO AL BACKEND)
+  // --- INICIO CAMBIO BACKEND: Procesar compra real ---
   const handleCheckout = async () => {
-    if (cart.length === 0) {
-        alert("El carrito está vacío");
-        return;
-    }
-
-    const token = localStorage.getItem('token');
+    if (cart.length === 0) return;
     
-    // Preparar datos para Java
+    // Obtener token (opcional si implementaste seguridad)
+    const token = localStorage.getItem('token');
+
+    // Preparar el JSON que pide tu Backend Java
     const compraData = {
         items: cart.map(item => ({
             productoId: item.id,
@@ -86,101 +136,161 @@ const Products = () => {
         });
 
         if (response.ok) {
-            alert("✅ ¡Compra realizada con éxito! \nStock actualizado en Oracle.");
+            alert(`✅ Compra realizada por ${formatPrice(getTotalPrice())}\n¡Gracias por tu compra! (Stock actualizado en Oracle)`);
             setCart([]);
-            setIsCartOpen(false);
-            // Recargar productos para ver el stock actualizado
+            // Recargar la página para ver el stock actualizado
             window.location.reload();
         } else {
-            const errorMsg = await response.text();
-            alert("❌ Error: " + errorMsg);
+            const errorText = await response.text();
+            alert('❌ Error al comprar: ' + errorText);
         }
     } catch (error) {
-        console.error("Error:", error);
-        alert("Error de conexión con el servidor");
+        console.error(error);
+        alert('❌ Error de conexión con el servidor.');
     }
   };
+  // --- FIN CAMBIO BACKEND ---
 
   return (
     <>
       <header>
-        <h1 className="titulo">🎮 Catálogo Level-Up 👾</h1>
+        <h1 className="titulo">🎮 Level-Up Gamer 👾</h1>
+        <nav>
+          <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/productos">Productos</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+          </ul>
+        </nav>
+        
+        {/* Contenedor para carrito y botones de autenticación */}
         <div className="header-right-section">
+          {/* Botón del Carrito */}
+          <button 
+            className="btn-carrito"
+            onClick={() => setIsCartOpen(true)}
+          >
+            🛒 Carrito ({getTotalItems()})
+          </button>
+          
+          {/* Contenedor para botones de autenticación */}
+          <div className="auth-buttons">
+            {/* Botón de Inicio de Sesión */}
             <button 
-              className="cart-icon-btn"
-              onClick={() => setIsCartOpen(!isCartOpen)}
+              className="btn-login"
+              onClick={() => { window.location.href = '/login'; }}
             >
-              🛒 <span className="cart-count">{cart.reduce((a, c) => a + c.quantity, 0)}</span>
+              🔐 Iniciar Sesión
             </button>
-            <button className="secondary-btn" onClick={() => navigate('/')}>
-               Inicio
+            
+            {/* Botón de Registro */}
+            <button 
+              className="btn-register"
+              onClick={() => { window.location.href = '/register'; }}
+            >
+              🎯 Registrarse
             </button>
+          </div>
         </div>
       </header>
 
-      <main className="products-container">
-        {products.length === 0 ? (
-            <p style={{textAlign: "center", marginTop: "2rem"}}>Cargando productos desde AWS...</p>
-        ) : (
-            <div className="products-grid">
-              {products.map((product) => (
-                <div key={product.id} className="product-card">
-                  <div className="product-image-container">
-                    <img src={product.image} alt={product.name} className="product-image" />
-                    {product.stock === 0 && <div className="no-stock-overlay">AGOTADO</div>}
+      <main>
+        <section>
+          <h2>Nuestros Productos</h2>
+          <div className="productos-container">
+            {products.map(product => {
+              const availableStock = getAvailableStock(product.id);
+              const isOutOfStock = availableStock <= 0;
+              
+              return (
+                <div key={product.id} className={`producto ${isOutOfStock ? 'producto-agotado' : ''}`}>
+                  <div className="producto-imagen">
+                    <img src={product.image} alt={product.name} />
+                    {isOutOfStock && <div className="stock-badge agotado">AGOTADO</div>}
+                    {availableStock > 0 && availableStock <= 3 && (
+                      <div className="stock-badge poco-stock">ÚLTIMAS {availableStock}</div>
+                    )}
                   </div>
-                  <div className="product-info">
-                    <h3>{product.name}</h3>
-                    <p className="category-tag">{product.category}</p>
-                    <div className="price-stock">
-                      <span className="price">{formatPrice(product.price)}</span>
-                      <span className={`stock ${product.stock < 5 ? 'low' : ''}`}>
-                        Stock: {product.stock}
-                      </span>
-                    </div>
-                    <button 
-                      onClick={() => addToCart(product)}
-                      className="add-to-cart-btn"
-                      disabled={product.stock === 0}
-                    >
-                      {product.stock === 0 ? 'Sin Stock' : 'Agregar al Carrito'}
-                    </button>
+                  <h3>{product.name}</h3>
+                  <p className="producto-precio">{formatPrice(product.price)}</p>
+                  <p className="producto-categoria">{product.category}</p>
+                  <div className="producto-stock">
+                    Stock disponible: <span className={availableStock === 0 ? 'stock-cero' : 'stock-disponible'}>
+                      {availableStock}
+                    </span>
                   </div>
+                  <button 
+                    className={`btn-agregar-carrito ${isOutOfStock ? 'btn-deshabilitado' : ''}`}
+                    onClick={() => addToCart(product)}
+                    disabled={isOutOfStock}
+                  >
+                    {isOutOfStock ? 'SIN STOCK' : 'Agregar al Carrito'}
+                  </button>
                 </div>
-              ))}
-            </div>
-        )}
+              );
+            })}
+          </div>
+        </section>
 
-        {/* Modal del Carrito */}
+        {/* Popup del Carrito */}
         {isCartOpen && (
-          <div className="cart-modal-overlay">
-            <div className="cart-modal">
-              <div className="cart-header">
-                <h2>Tu Carrito</h2>
-                <button onClick={() => setIsCartOpen(false)} className="close-btn">×</button>
-              </div>
+          <div className="overlay active">
+            <div className="cart-popup">
+              <button 
+                className="btn-close-popup"
+                onClick={() => setIsCartOpen(false)}
+              >
+                &times;
+              </button>
+              <h2>🛒 Tu Carrito de Compras</h2>
               
               {cart.length === 0 ? (
-                <p className="empty-cart-msg">No tienes productos seleccionados.</p>
+                <p className="carrito-vacio">Tu carrito está vacío</p>
               ) : (
                 <>
                   <div className="cart-items">
-                    {cart.map(item => (
-                      <div key={item.id} className="cart-item">
-                        <div className="cart-item-info">
-                          <h4>{item.name}</h4>
-                          <p>Cant: {item.quantity} x {formatPrice(item.price)}</p>
-                        </div>
-                        <div className="cart-item-actions">
+                    {cart.map(item => {
+                      const availableStock = getAvailableStock(item.id) + item.quantity;
+                      
+                      return (
+                        <div key={item.id} className="cart-item">
+                          <div className="cart-item-info">
+                            <span className="cart-item-name">{item.name}</span>
+                            <span className="cart-item-price">{formatPrice(item.price)}</span>
+                          </div>
+                          
+                          <div className="cart-item-stock">
+                            Stock total: {availableStock}
+                          </div>
+                          
+                          <div className="cart-item-controls">
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="btn-cantidad"
+                            >
+                              -
+                            </button>
+                            <span className="cart-item-quantity">{item.quantity}</span>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="btn-cantidad"
+                              disabled={item.quantity >= availableStock}
+                            >
+                              +
+                            </button>
                             <button 
                               onClick={() => removeFromCart(item.id)}
                               className="btn-eliminar"
                             >
                               🗑️
                             </button>
+                          </div>
+                          <div className="cart-item-total">
+                            Total: {formatPrice(item.price * item.quantity)}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   
                   <div className="cart-total">
@@ -192,13 +302,13 @@ const Products = () => {
                       className="btn-vaciar-carrito"
                       onClick={() => setCart([])}
                     >
-                      Vaciar
+                      Vaciar Carrito
                     </button>
                     <button 
                       className="btn-comprar"
                       onClick={handleCheckout}
                     >
-                      Pagar Ahora
+                      Proceder al Pago
                     </button>
                   </div>
                 </>
@@ -209,7 +319,7 @@ const Products = () => {
       </main>
 
       <footer>
-        <p>© 2025 - Level-Up Gamer</p>
+        <p>© 2025 - Level-Up Gamer | Equipo FullStack 2 | Alan - Kareem</p>
       </footer>
     </>
   );

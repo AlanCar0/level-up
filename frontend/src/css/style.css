@@ -17,62 +17,139 @@ body {
   padding: 0;
 }
 
-/* 
-   Header y Título
+/* =======================================================
+   HEADER Y NAVBAR (CORREGIDO Y UNIFICADO)
+   =======================================================
  */
-header {
-  background-color: #1E90FF;         /* azul eléctrico */
-  padding: 20px;
-  display: flex;                     /* activa flexbox */
-  justify-content: space-between;    /* menú a la izquierda, botón a la derecha */
+header.navbar-container {
+  background-color: #1E90FF !important; /* Azul eléctrico sólido (sin líneas raras) */
+  background-image: none !important;    /* Asegura que no haya degradados ocultos */
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   position: relative;
-}
-
-.titulo {
-  font-family: 'Orbitron', sans-serif; /* fuente futurista */
-  color: #FFFFFF;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  width: 100%;
+  box-sizing: border-box; /* Evita que el padding rompa el ancho */
+  z-index: 100;
   margin: 0;
-  font-size: 2.5rem;                 /* tamaño grande para resaltar */
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
-/* 
-   Menú de Navegación
+/* Secciones del Navbar para alinear correctamente */
+.nav-section {
+  display: flex;
+  align-items: center;
+  flex: 1; /* Truco para que el título quede centrado perfecto */
+}
+
+/* IZQUIERDA: Botones de navegación */
+.nav-section.nav-left {
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+/* CENTRO: Título */
+.nav-section.nav-center {
+  justify-content: center;
+  text-align: center;
+}
+
+/* DERECHA: Auth y Carrito */
+.nav-section.nav-right {
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+/* Título con Tipografía Antigua (Orbitron) */
+.titulo {
+  font-family: 'Orbitron', sans-serif !important;
+  color: #FFFFFF;
+  font-size: 2.2rem;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  position: static;
+  transform: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Estilo de los botones de la izquierda (Inicio, Productos, Contacto) */
+.btn-nav-style {
+  text-decoration: none;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif; /* Misma fuente que el título */
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.25); /* Fondo sutil */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-nav-style:hover {
+  background-color: #39FF14; /* Verde neón al pasar el mouse */
+  color: #000;
+  box-shadow: 0 0 15px #39FF14;
+  transform: translateY(-2px);
+  border-color: #39FF14;
+}
+
+/* Botón Admin */
+.btn-nav-style.admin-btn {
+  border-color: #FFD700;
+  color: #FFD700;
+}
+.btn-nav-style.admin-btn:hover {
+  background-color: #FFD700;
+  color: #000;
+}
+
+/* Contenedor de botones de login/registro */
+.auth-buttons-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* Menú de Navegación (Legacy - por si acaso se usa en otro lado)
 */
 nav ul {
-  list-style: none;                   /* quitar puntos de la lista */
-  display: flex;                      /* organizar horizontalmente */
-  gap: 30px;                          /* espacio entre enlaces */
+  list-style: none;
+  display: flex;
+  gap: 30px;
   align-items: center;
   padding: 0;
   margin: 0;
 }
 
 nav ul li a {
-  text-decoration: none;             /* quitar subrayado */
-  color: #39FF14;                    /* verde neón */
+  text-decoration: none;
+  color: #39FF14;
   font-weight: bold;
   padding: 10px 20px;
   border-radius: 8px;
   font-family: 'Orbitron', sans-serif;
-  transition: all 0.3s ease;         /* animaciones suaves */
+  transition: all 0.3s ease;
 }
 
 nav ul li a:hover {
-  background-color: #39FF14;         /* verde neón al pasar mouse */
-  color: #000000;                     /* texto negro sobre verde */
-  transform: scale(1.1);              /* efecto zoom */
-  box-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14; /* resplandor */
+  background-color: #39FF14;
+  color: #000000;
+  transform: scale(1.1);
+  box-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
 }
 
 /*
    Main
 */
 main {
-  display: flex;                     
+  display: flex;
   flex-direction: column;            /* apila secciones verticalmente */
   align-items: center;               /* centra horizontalmente */
   justify-content: center;           /* centra verticalmente */
@@ -81,8 +158,7 @@ main {
   padding: 20px;
 }
 
-/* 
-   Productos
+/* Productos
  */
 .productos-container {
   display: grid;
@@ -232,8 +308,7 @@ main {
   box-shadow: none !important;
 }
 
-/* 
-   Texto Secundario
+/* Texto Secundario
 */
 .texto-secundario {
   color: #D3D3D3;
@@ -242,36 +317,35 @@ main {
 
 /* Carrusel básico */
 .carrusel-css {
-    width: 676px;      
-    height: 423px;
-    margin: 40px auto;
-    overflow: hidden;
-    position: relative;
+  width: 676px;
+  height: 423px;
+  margin: 40px auto;
+  overflow: hidden;
+  position: relative;
 }
 
 .carrusel-css .slides {
-    display: flex;
-    width: 100%;  /* 3 imágenes → 300% del contenedor */
-    animation: mover 9s infinite;
+  display: flex;
+  width: 100%;  /* 3 imágenes → 300% del contenedor */
+  animation: mover 9s infinite;
 }
 
 .carrusel-css .slides img {
-    width: 100%;              /* cada imagen ocupa 100% del contenedor visible */
-    flex-shrink: 0;
-    object-fit: contain;       /* cambia cover → contain para que se vea completa */
-    background-color: #000;
+  width: 100%;              /* cada imagen ocupa 100% del contenedor visible */
+  flex-shrink: 0;
+  object-fit: contain;       /* cambia cover → contain para que se vea completa */
+  background-color: #000;
 }
 
 /* Animación */
 @keyframes mover {
-    0% { transform: translateX(0%); }
-    33% { transform: translateX(-100%); }
-    66% { transform: translateX(-200%); }
-    100% { transform: translateX(0%); }
+  0% { transform: translateX(0%); }
+  33% { transform: translateX(-100%); }
+  66% { transform: translateX(-200%); }
+  100% { transform: translateX(0%); }
 }
 
-/* 
-   Footer
+/* Footer
 */
 footer {
   background-color: #111;
@@ -290,7 +364,7 @@ section.info-contacto{
   font-weight: bold;
   font-family: 'Orbitron', sans-serif;
   list-style: none;
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 section.info-contacto ul {
@@ -419,13 +493,24 @@ section.ctform{
   font-family: 'Orbitron', sans-serif;
   font-weight: bold;
   transition: all 0.3s ease;
-  margin-right: 20px;
+  /* El margin se ajusta en el navbar nuevo automáticamente */
 }
 
 .btn-carrito:hover {
   background: #1E90FF;
   color: #fff;
   box-shadow: 0 0 15px #1E90FF;
+}
+
+/* Badge del carrito (contador) */
+.cart-badge {
+  background-color: #ff4444;
+  color: white;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 5px;
+  vertical-align: top;
 }
 
 /* Popup del carrito */
@@ -675,7 +760,7 @@ section.ctform{
 
 /* ========== Panel ========== */
 .admin-panel {
-  background: #2c3e50 !important; 
+  background: #2c3e50 !important;
   color: white !important;
   padding: 2rem !important;
   border-radius: 10px !important;
@@ -697,49 +782,56 @@ section.ctform{
 }
 
 
-@media (max-width: 768px) {
-  header {
+/* Media Queries generales */
+@media (max-width: 1000px) {
+  header.navbar-container {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
   }
-  
+
+  .nav-section {
+    width: 100%;
+    justify-content: center !important;
+  }
+
   .titulo {
     position: static;
     transform: none;
     text-align: center;
     order: -1;
     font-size: 2rem;
+    margin-bottom: 5px;
   }
-  
+
   nav ul {
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
   }
-  
+
   .auth-buttons {
     justify-content: center;
   }
-  
+
   .carrusel-css {
     width: 100%;
     height: 250px;
   }
-  
+
   main {
     padding: 1rem;
   }
-  
+
   .productos-container {
     grid-template-columns: 1fr;
   }
-  
+
   .cart-popup {
     width: 95%;
     padding: 15px;
   }
-  
+
   .cart-actions {
     flex-direction: column;
   }
@@ -749,12 +841,12 @@ section.ctform{
   .titulo {
     font-size: 1.5rem;
   }
-  
+
   nav ul li a {
     padding: 8px 16px;
     font-size: 0.9rem;
   }
-  
+
   .btn-carrito, .btn-login, .btn-register {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
@@ -998,15 +1090,15 @@ section.ctform{
   .contact-content {
     grid-template-columns: 1fr;
   }
-  
+
   .contact-hero {
     padding: 2rem 1rem;
   }
-  
+
   .hero-content h1 {
     font-size: 2rem;
   }
-  
+
   .form-section, .info-section {
     padding: 1.5rem;
   }
@@ -1116,20 +1208,20 @@ section.ctform{
     margin: 2rem auto;
     padding: 0 1rem;
   }
-  
+
   .maps-container h2 {
     font-size: 1.8rem;
   }
-  
+
   .location-details {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .map-wrapper {
     border-width: 2px;
   }
-  
+
   .google-map {
     height: 300px;
   }
@@ -1148,7 +1240,7 @@ section.ctform{
     padding: 2rem 1rem;
     margin: 2rem auto;
   }
-  
+
   .google-map {
     height: 250px;
   }
@@ -1362,15 +1454,15 @@ section.ctform{
   .register-container {
     padding: 1rem;
   }
-  
+
   .register-card {
     padding: 2rem;
   }
-  
+
   .register-header h1 {
     font-size: 1.8rem;
   }
-  
+
   .register-icon {
     font-size: 3rem;
   }
@@ -1380,15 +1472,15 @@ section.ctform{
   .register-card {
     padding: 1.5rem;
   }
-  
+
   .register-header h1 {
     font-size: 1.6rem;
   }
-  
+
   .form-input {
     padding: 0.8rem;
   }
-  
+
   .submit-btn {
     padding: 1rem;
     font-size: 1rem;
@@ -1502,7 +1594,7 @@ section.ctform{
     grid-template-columns: 1fr;
     gap: 0.8rem;
   }
-  
+
   .back-button {
     position: relative;
     top: auto;
@@ -1517,7 +1609,7 @@ section.ctform{
     font-size: 0.8rem;
     padding: 0.4rem 0.8rem;
   }
-  
+
   .password-toggle {
     font-size: 1rem;
     right: 8px;
@@ -1551,12 +1643,12 @@ section.ctform{
     align-items: center;
     width: 100%;
   }
-  
+
   .header-right-section .auth-buttons {
     justify-content: center;
     width: 100%;
   }
-  
+
   .header-right-section .btn-login,
   .header-right-section .btn-register {
     flex: 1;

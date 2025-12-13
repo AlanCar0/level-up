@@ -5,17 +5,15 @@ import inicio2 from "../img/inicio2.png";
 import inicio3 from "../img/inicio3.png";
 
 const Home = () => {
-  
+
   useEffect(() => {
-    // Inicializar todos los popups y funcionalidades después de que el componente se monte
     initializePopups();
   }, []);
 
   const initializePopups = () => {
-    // Popup del Carrito (si existe)
     const cartPopup = document.getElementById('cartPopup');
     const closeCartBtn = document.getElementById('closeCartBtn');
-    
+
     if (closeCartBtn && cartPopup) {
       closeCartBtn.onclick = function() {
         cartPopup.style.display = 'none';
@@ -29,7 +27,7 @@ const Home = () => {
   const initializeCarousel = () => {
     let currentSlide = 0;
     const slides = document.querySelector('.slides');
-    
+
     if (slides) {
       setInterval(() => {
         currentSlide = (currentSlide + 1) % 3; // Asumiendo 3 slides
@@ -41,38 +39,10 @@ const Home = () => {
   return (
     <>
 
-      {/* Header */}
       <header>
-        <h1 className="titulo">🎮 Level-Up Gamer 👾</h1>
-        <nav>
-          <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/productos">Productos</a></li>
-            <li><a href="/contacto">Contacto</a></li>
-          </ul>
-        </nav>
-        
-        {/* Contenedor para botones de autenticación */}
-        <div className="auth-buttons">
-          {/* Botón de Inicio de Sesión */}
-          <button 
-            className="btn-login"
-            onClick={() => { window.location.href = '/login'; }}
-          >
-            🔐 Iniciar Sesión
-          </button>
-          
-          {/* Botón de Registro */}
-          <button 
-            className="btn-register"
-            onClick={() => { window.location.href = '/register'; }}
-          >
-            🎯 Registrarse
-          </button>
-        </div>
+
       </header>
 
-      {/* Main content */}
       <main>
         <section className="carrusel-css">
           <div className="slides">

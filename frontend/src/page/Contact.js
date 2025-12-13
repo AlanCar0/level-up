@@ -56,32 +56,7 @@ const Contact = () => {
   return (
     <>
       <header>
-        <h1 className="titulo">🎮 Level-Up Gamer 👾</h1>
-        <nav>
-          <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/productos">Productos</a></li>
-            <li><a href="/contacto" className="activo">Contacto</a></li>
-          </ul>
-        </nav>
-                {/* Contenedor para botones de autenticación */}
-        <div className="auth-buttons">
-          {/* Botón de Inicio de Sesión */}
-          <button 
-            className="btn-login"
-            onClick={() => { window.location.href = '/login'; }}
-          >
-            🔐 Iniciar Sesión
-          </button>
-          
-          {/* Botón de Registro */}
-          <button 
-            className="btn-register"
-            onClick={() => { window.location.href = '/register'; }}
-          >
-            🎯 Registrarse
-          </button>
-        </div>
+
       </header>
 
       <main>

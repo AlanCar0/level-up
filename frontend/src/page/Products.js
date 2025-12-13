@@ -7,7 +7,6 @@ const Products = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [products, setProducts] = useState([]); // Ahora inicia vacío
 
-  // --- INICIO CAMBIO BACKEND: Cargar productos reales ---
   useEffect(() => {
     fetch(`${API_URL}/api/products`)
       .then(res => res.json())
@@ -17,9 +16,7 @@ const Products = () => {
       })
       .catch(err => console.error("Error cargando productos:", err));
   }, []);
-  // --- FIN CAMBIO BACKEND ---
 
-  // Cargar carrito desde localStorage al iniciar (Tu lógica original)
   useEffect(() => {
     const savedCart = localStorage.getItem('levelUpCart');
     if (savedCart) {
@@ -154,44 +151,7 @@ const Products = () => {
   return (
     <>
       <header>
-        <h1 className="titulo">🎮 Level-Up Gamer 👾</h1>
-        <nav>
-          <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/productos">Productos</a></li>
-            <li><a href="/contacto">Contacto</a></li>
-          </ul>
-        </nav>
-        
-        {/* Contenedor para carrito y botones de autenticación */}
-        <div className="header-right-section">
-          {/* Botón del Carrito */}
-          <button 
-            className="btn-carrito"
-            onClick={() => setIsCartOpen(true)}
-          >
-            🛒 Carrito ({getTotalItems()})
-          </button>
-          
-          {/* Contenedor para botones de autenticación */}
-          <div className="auth-buttons">
-            {/* Botón de Inicio de Sesión */}
-            <button 
-              className="btn-login"
-              onClick={() => { window.location.href = '/login'; }}
-            >
-              🔐 Iniciar Sesión
-            </button>
-            
-            {/* Botón de Registro */}
-            <button 
-              className="btn-register"
-              onClick={() => { window.location.href = '/register'; }}
-            >
-              🎯 Registrarse
-            </button>
-          </div>
-        </div>
+
       </header>
 
       <main>

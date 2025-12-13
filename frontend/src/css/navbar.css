@@ -1,0 +1,47 @@
+.navbar-gamer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: linear-gradient(90deg, #1e90ff, #2196f3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-gamer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-cart {
+    background: #2ecc71;
+}
+
+.btn-login {
+    background: #3498db;
+}
+
+.btn-register {
+    background: #f39c12;
+}
+
+.btn-gamer:hover {
+    transform: translateY(-2px);
+}

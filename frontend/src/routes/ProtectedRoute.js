@@ -2,14 +2,27 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ role }) => {
     const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user'));
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
 
-    if (!token) return <Navigate to="/login" />;
-
-    if (role && user?.rol !== role) {
-        return <Navigate to="/" />;
+    // 🔒 No logueado
+    if (!token || !usuario) {
+        return <Navigate to="/login" replace />;
     }
 
+    // 🚫 Rol incorrecto
+    if (role && usuario.rol !== role) {
+        return (
+            <Navigate
+                to="/"
+                replace
+                state={{
+                    error: '⛔ Acceso denegado: no tienes permisos de administrador'
+                }}
+            />
+        );
+    }
+
+    // ✅ Acceso permitido
     return <Outlet />;
 };
 

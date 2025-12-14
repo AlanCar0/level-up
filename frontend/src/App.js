@@ -16,6 +16,7 @@ import "./css/style.css";
 function App() {
     return (
         <Router>
+            {/* Navbar GLOBAL */}
             <Navbar />
 
             <Routes>
@@ -23,10 +24,10 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/productos" element={<Products />} />
                 <Route path="/contacto" element={<Contact />} />
-                <Route path="/register" element={<Register/>} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
 
-                {/* Rutas ADMIN */}
+                {/* 🔐 Rutas protegidas ADMIN */}
                 <Route element={<ProtectedRoute role="ADMIN" />}>
                     <Route path="/admin/productos" element={<AdminProductos />} />
                 </Route>

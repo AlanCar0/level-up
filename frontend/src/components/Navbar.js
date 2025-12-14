@@ -8,14 +8,14 @@ const Navbar = () => {
 
     let user = null;
     try {
-        user = JSON.parse(localStorage.getItem("user"));
+        user = JSON.parse(localStorage.getItem("usuario"));
     } catch {
         user = null;
     }
 
     const isProductsPage = location.pathname === "/productos";
 
-    // Lógica del carrito
+
     useEffect(() => {
         const readCartCount = () => {
             const raw = localStorage.getItem("levelUpCart");
@@ -37,38 +37,40 @@ const Navbar = () => {
         };
 
         readCartCount();
+
         const onStorage = (e) => {
             if (e.key === "levelUpCart") readCartCount();
         };
+
         window.addEventListener("storage", onStorage);
         return () => window.removeEventListener("storage", onStorage);
     }, [location]);
 
     return (
         <header className="navbar-container">
-            {/* 1. IZQUIERDA: BOTONES DE NAVEGACIÓN */}
+
+            {/* IZQUIERDA */}
             <nav className="nav-section nav-left">
                 <Link to="/" className="btn-nav-style">🏠 Inicio</Link>
                 <Link to="/productos" className="btn-nav-style">🕹️ Productos</Link>
                 <Link to="/contacto" className="btn-nav-style">📩 Contacto</Link>
+
                 {user?.rol === "ADMIN" && (
-                    <Link to="/admin/productos" className="btn-nav-style admin-btn">🛠 Admin</Link>
+                    <Link to="/admin/productos" className="btn-nav-style admin-btn">
+                        🛠 Admin
+                    </Link>
                 )}
             </nav>
 
-            {/* 2. CENTRO: TÍTULO CON FUENTE ANTIGUA E ICONOS */}
+            {/* CENTRO */}
             <div className="nav-section nav-center">
                 <h1 className="titulo">🎮 Level-Up Gamer 👾</h1>
             </div>
 
-            {/* 3. DERECHA: LOGIN / REGISTRO / CARRITO */}
+            {/* DERECHA */}
             <div className="nav-section nav-right">
-                {isProductsPage && (
-                    <Link to="/productos" className="btn-carrito" title="Ver carrito">
-                        🛒
-                        {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-                    </Link>
-                )}
+
+                {/* 🛒 SOLO EN /productos */}
 
                 {!user ? (
                     <div className="auth-buttons-group">
@@ -80,16 +82,22 @@ const Navbar = () => {
                         </Link>
                     </div>
                 ) : (
-                    <button
-                        className="btn-login"
-                        style={{ backgroundColor: "#e74c3c" }}
-                        onClick={() => {
-                            localStorage.clear();
-                            window.location.href = "/login";
-                        }}
-                    >
-                        🚪 Cerrar sesión
-                    </button>
+                    <div className="auth-buttons-group">
+                        <span className="user-greeting">
+                            👋 Hola, <strong>{user.nombre}</strong>
+                        </span>
+
+                        <button
+                            className="btn-login"
+                            style={{ backgroundColor: "#e74c3c" }}
+                            onClick={() => {
+                                localStorage.clear();
+                                window.location.href = "/login";
+                            }}
+                        >
+                            🚪 Cerrar sesión
+                        </button>
+                    </div>
                 )}
             </div>
         </header>

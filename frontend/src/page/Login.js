@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API_URL from '../utils/apiconfig'; 
+import API_URL from '../utils/apiconfig';
 import '../css/style.css';
 
 const Login = () => {
@@ -48,12 +48,9 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      console.log("Intentando login en:", `${API_URL}/auth/login`);
-      console.log("Datos enviados:", { email: formData.email, password: formData.password });
-
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -63,19 +60,24 @@ const Login = () => {
         })
       });
 
-      console.log("Respuesta status:", response.status);
-      console.log("Respuesta ok:", response.ok);
-
       if (response.ok) {
         const data = await response.json();
-        console.log("Datos recibidos:", data);
-        
-        // Guardar token y usuario
-        localStorage.setItem('token', data.token || 'token-simulado');
-        localStorage.setItem('usuario', JSON.stringify(data));
-        
-        alert(`¡Bienvenido ${data.nombre || "Gamer"}!`);
-        navigate('/productos');
+
+        // ✅ Guardar token y usuario (CLAVE PARA ProtectedRoute)
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('usuario', JSON.stringify({
+          id: data.id,
+          nombre: data.nombre,
+          rol: data.rol
+        }));
+
+        // ✅ Redirección SEGÚN ROL
+        if (data.rol === "ADMIN") {
+          navigate("/admin/productos");
+        } else {
+          navigate("/productos");
+        }
+
       } else {
         let errorMessage = "Credenciales incorrectas";
         try {
@@ -88,89 +90,94 @@ const Login = () => {
         alert(`❌ ${errorMessage}`);
       }
     } catch (error) {
-      console.error("Error completo:", error);
-      alert(`Error al conectar con el servidor: ${error.message}\n\nVerifica:\n1. Que el backend esté ejecutándose\n2. Que la URL ${API_URL} sea correcta\n3. Que no haya problemas de CORS`);
+      alert(
+          `Error al conectar con el servidor.\n\n` +
+          `Verifica:\n` +
+          `1. Backend activo\n` +
+          `2. API_URL correcta\n` +
+          `3. CORS`
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="register-container">
-      <div className="register-card">
-        <div className="register-header">
-          <h2>👾 Iniciar Sesión</h2>
-          <p>¡Bienvenido de nuevo, jugador!</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="register-form">
-          <div className="form-group">
-            <label>Correo Electrónico</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={errors.email ? 'error' : ''}
-              placeholder="ejemplo@correo.com"
-            />
-            {errors.email && <span className="error-message">{errors.email}</span>}
+      <div className="register-container">
+        <div className="register-card">
+          <div className="register-header">
+            <h2>👾 Iniciar Sesión</h2>
+            <p>¡Bienvenido de nuevo, jugador!</p>
           </div>
 
-          <div className="form-group">
-            <label>Contraseña</label>
-            <div className="password-input-wrapper">
+          <form onSubmit={handleSubmit} className="register-form">
+            <div className="form-group">
+              <label>Correo Electrónico</label>
               <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className={errors.password ? 'error' : ''}
-                placeholder="Ingresa tu contraseña"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={errors.email ? 'error' : ''}
+                  placeholder="ejemplo@correo.com"
               />
+              {errors.email && <span className="error-message">{errors.email}</span>}
+            </div>
+
+            <div className="form-group">
+              <label>Contraseña</label>
+              <div className="password-input-wrapper">
+                <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={errors.password ? 'error' : ''}
+                    placeholder="Ingresa tu contraseña"
+                />
+                <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
+              </div>
+              {errors.password && <span className="error-message">{errors.password}</span>}
+            </div>
+
+            <div className="form-actions">
               <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
+                  type="button"
+                  className="secondary-btn"
+                  onClick={() => navigate('/')}
               >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
+                🏠 Volver
+              </button>
+              <button
+                  type="submit"
+                  className={`submit-btn ${isSubmitting ? 'loading' : ''}`}
+                  disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Cargando...' : '🎯 Ingresar'}
               </button>
             </div>
-            {errors.password && <span className="error-message">{errors.password}</span>}
-          </div>
+          </form>
 
-          <div className="form-actions">
-            <button 
-              type="button" 
-              className="secondary-btn"
-              onClick={() => navigate('/')}
-            >
-              🏠 Volver
-            </button>
-            <button 
-              type="submit" 
-              className={`submit-btn ${isSubmitting ? 'loading' : ''}`}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Cargando...' : '🎯 Ingresar'}
-            </button>
+          <div className="register-footer">
+            <p>
+              ¿No tienes una cuenta?{' '}
+              <button
+                  type="button"
+                  className="link-btn"
+                  onClick={() => navigate('/register')}
+              >
+                Regístrate aquí
+              </button>
+            </p>
           </div>
-        </form>
-
-        <div className="register-footer">
-          <p>
-            ¿No tienes una cuenta?{' '}
-            <button 
-              type="button" 
-              className="link-btn"
-              onClick={() => navigate('/register')}
-            >
-              Regístrate aquí
-            </button>
-          </p>
         </div>
       </div>
-    </div>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import API_URL from '../utils/apiconfig.js'; // Asegúrate de tener esto, si no, comenta la importación
+// IMPORTAMOS SERVICIOS
+import { getAllProducts, createProduct, deleteProduct } from '../service/product';
 import "../css/style.css";
 
 const AdminProductos = () => {
@@ -19,25 +20,14 @@ const AdminProductos = () => {
     const [editId, setEditId] = useState(null);
     const [message, setMessage] = useState({ text: '', type: '' });
 
-    // --- CARGAR PRODUCTOS ---
+    // --- CARGAR PRODUCTOS (BACKEND) ---
     const fetchProducts = async () => {
-        // MODO PRUEBA (Para ver diseño inmediatamente)
-        const mockData = [
-            { id: 1, name: "PC Gamer RTX 4090", price: 1500000, category: "Computadores", stock: 5, image: "https://via.placeholder.com/100" },
-            { id: 2, name: "Teclado Mecánico", price: 45000, category: "Periféricos", stock: 12, image: "https://via.placeholder.com/100" }
-        ];
-        setProducts(mockData);
-
-        // MODO REAL (Descomentar cuando conectes Java)
-        /*
         try {
-          const res = await fetch(`${API_URL}/api/products`);
-          const data = await res.json();
+          const data = await getAllProducts();
           setProducts(data);
         } catch (error) {
           console.error("Error al cargar productos", error);
         }
-        */
     };
 
     useEffect(() => {
@@ -60,16 +50,26 @@ const AdminProductos = () => {
             return;
         }
 
-        // SIMULACIÓN DE LÓGICA (Reemplazar con Fetch real)
-        if (isEditing) {
-            // Lógica Editar
-            setProducts(products.map(p => p.id === editId ? { ...formData, id: editId, price: Number(formData.price), stock: Number(formData.stock) } : p));
-            setMessage({ text: '✅ Producto actualizado correctamente.', type: 'success' });
-        } else {
-            // Lógica Agregar
-            const newProduct = { ...formData, id: Date.now(), price: Number(formData.price), stock: Number(formData.stock) };
-            setProducts([...products, newProduct]);
-            setMessage({ text: '✅ Producto agregado al arsenal.', type: 'success' });
+        try {
+            if (isEditing) {
+                // Lógica Editar (Tu backend actual no tiene endpoint PUT, mostrar alerta)
+                alert("Funcionalidad de editar requiere endpoint PUT en el backend.");
+            } else {
+                // Lógica Agregar (BACKEND)
+                await createProduct({
+                    name: formData.name,
+                    price: parseFloat(formData.price),
+                    stock: parseInt(formData.stock),
+                    image: formData.image
+                    // category: formData.category
+                });
+                setMessage({ text: '✅ Producto agregado al arsenal.', type: 'success' });
+            }
+            // Recargar tabla
+            fetchProducts();
+        } catch (error) {
+            console.error(error);
+            setMessage({ text: '❌ Error al guardar.', type: 'error' });
         }
 
         // Resetear form
@@ -81,7 +81,7 @@ const AdminProductos = () => {
         setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     };
 
-    // --- PREPARAR EDICIÓN ---
+    // --- PREPARAR EDICIÓN (Visual) ---
     const handleEdit = (product) => {
         setFormData(product);
         setIsEditing(true);
@@ -89,13 +89,18 @@ const AdminProductos = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' }); // Subir al formulario
     };
 
-    // --- ELIMINAR ---
+    // --- ELIMINAR (BACKEND) ---
     const handleDelete = async (id) => {
         if (!window.confirm("¿Estás seguro de eliminar este ítem del inventario?")) return;
 
-        // SIMULACIÓN (Reemplazar con Fetch DELETE real)
-        setProducts(products.filter(p => p.id !== id));
-        setMessage({ text: '🗑️ Producto eliminado.', type: 'success' });
+        try {
+            await deleteProduct(id);
+            setMessage({ text: '🗑️ Producto eliminado.', type: 'success' });
+            fetchProducts();
+        } catch (error) {
+            console.error(error);
+            setMessage({ text: '❌ Error al eliminar.', type: 'error' });
+        }
         setTimeout(() => setMessage({ text: '', type: '' }), 3000);
     };
 
@@ -209,7 +214,7 @@ const AdminProductos = () => {
                                             </div>
                                         </td>
                                         <td className="fw-bold">{p.name}</td>
-                                        <td><span className="category-badge">{p.category}</span></td>
+                                        <td><span className="category-badge">{p.category || 'General'}</span></td>
                                         <td className="price-text">{formatPrice(p.price)}</td>
                                         <td>
                         <span className={`stock-badge ${p.stock < 5 ? 'low' : 'ok'}`}>

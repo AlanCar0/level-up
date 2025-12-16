@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
-import API_URL from '../utils/apiconfig.js';
+// IMPORTAMOS SERVICIOS
+import { getAllProducts } from '../service/product';
+import { addToCart as apiAddToCart, getCart, removeItem } from '../service/cart';
+import { checkout } from '../service/orders';
+import { isUser } from '../service/auth';
 import "../css/style.css";
 
 const Products = () => {
@@ -7,66 +11,42 @@ const Products = () => {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [products, setProducts] = useState([]);
 
-    const fetchProducts = () => {
-        // --- MODO PRUEBA: DATOS FALSOS (Activo) ---
-        console.log("Cargando datos falsos para diseño...");
-        const datosDePrueba = [
-            {
-                id: 1,
-                name: "PC Gamer RTX 4090",
-                price: 1500000,
-                category: "Computadores",
-                stock: 5,
-                image: "https://via.placeholder.com/300/000000/39FF14?text=PC+Gamer"
-            },
-            {
-                id: 2,
-                name: "Teclado Mecánico RGB",
-                price: 45000,
-                category: "Periféricos",
-                stock: 10,
-                image: "https://via.placeholder.com/300/000000/39FF14?text=Teclado"
-            },
-            {
-                id: 3,
-                name: "Mouse Pro Wireless",
-                price: 35000,
-                category: "Periféricos",
-                stock: 2,
-                image: "https://via.placeholder.com/300/000000/39FF14?text=Mouse"
-            },
-            {
-                id: 4,
-                name: "Monitor 144Hz",
-                price: 250000,
-                category: "Monitores",
-                stock: 0,
-                image: "https://images-ext-1.discordapp.net/external/0axBLKciSJRfT-oKu0jDR-mnjCKdgYL-3qBynU4C-TU/%3Fnull/https/i5.walmartimages.cl/asr/4065a6fb-9c6a-4fbf-a7ff-1797ba3f422b.7d7422b76c7a48f06b1f171749b2ef5f.jpeg?format=webp&width=960&height=960"
-            }
-        ];
-        setProducts(datosDePrueba);
+    // --- CARGAR PRODUCTOS (BACKEND) ---
+    const fetchProducts = async () => {
+        try {
+            const data = await getAllProducts();
+            setProducts(data);
+        } catch (err) {
+            console.error("Error cargando productos:", err);
+        }
+    };
 
-        // --- MODO REAL: BACKEND (Descomentar cuando conectes Java) ---
-        /*
-        fetch(`${API_URL}/api/products`)
-            .then(res => res.json())
-            .then(data => setProducts(data))
-            .catch(err => console.error("Error cargando productos:", err));
-        */
+    // --- CARGAR CARRITO (BACKEND) ---
+    const fetchCart = async () => {
+        // Solo intentamos cargar si el usuario está logueado
+        if (!isUser()) return;
+
+        try {
+            const cartDto = await getCart();
+            // Mapeamos los datos del DTO para que calcen con tu diseño visual
+            const mappedItems = cartDto.items.map(item => ({
+                id: item.productId,        // ID del producto para lógica de stock
+                cartItemId: item.id,       // ID del item en el carro para borrar
+                name: item.productName,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image || "https://via.placeholder.com/300" // Fallback si no viene imagen
+            }));
+            setCart(mappedItems);
+        } catch (error) {
+            console.log("Carrito vacío o sesión expirada");
+        }
     };
 
     useEffect(() => {
         fetchProducts();
+        fetchCart();
     }, []);
-
-    useEffect(() => {
-        const savedCart = localStorage.getItem('levelUpCart');
-        if (savedCart) setCart(JSON.parse(savedCart));
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('levelUpCart', JSON.stringify(cart));
-    }, [cart]);
 
     const getAvailableStock = (productId) => {
         const product = products.find(p => p.id === productId);
@@ -76,46 +56,43 @@ const Products = () => {
         return product.stock - stockUsed;
     };
 
-    const addToCart = (product) => {
+    const addToCart = async (product) => {
+        if (!isUser()) {
+            alert('❌ Debes iniciar sesión para comprar');
+            return;
+        }
+        
         const availableStock = getAvailableStock(product.id);
         if (availableStock <= 0) {
             alert('❌ No hay stock disponible');
             return;
         }
 
-        setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.id === product.id);
-            if (existingItem) {
-                if (existingItem.quantity >= product.stock) {
-                    alert('❌ Stock máximo alcanzado');
-                    return prevCart;
-                }
-                return prevCart.map(item =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
-            } else {
-                return [...prevCart, { ...product, quantity: 1 }];
-            }
-        });
+        try {
+            // Llamada al backend
+            await apiAddToCart(product.id, 1);
+            // Actualizamos la vista recargando el carrito
+            fetchCart();
+            alert('✅ Producto agregado al carro');
+        } catch (error) {
+            console.error(error);
+            alert('❌ Error al agregar producto');
+        }
     };
 
-    const removeFromCart = (productId) => {
-        setCart(prevCart => prevCart.filter(item => item.id !== productId));
+    const removeFromCart = async (cartItemId) => {
+        try {
+            await removeItem(cartItemId);
+            fetchCart();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
+    // Nota: El backend básico no tiene endpoint de update quantity (+ / -)
+    // Para no romper tu UI, dejamos los botones pero con alerta o desactivados
     const updateQuantity = (productId, newQuantity) => {
-        if (newQuantity < 1) {
-            removeFromCart(productId);
-            return;
-        }
-        const product = products.find(p => p.id === productId);
-        if (newQuantity > product.stock) {
-            alert(`❌ Solo hay ${product.stock} unidades disponibles`);
-            return;
-        }
-        setCart(prevCart =>
-            prevCart.map(item => item.id === productId ? { ...item, quantity: newQuantity } : item)
-        );
+        alert("Para cambiar cantidad, elimina el item o agrega más desde el catálogo.");
     };
 
     const getTotalItems = () => cart.reduce((total, item) => total + item.quantity, 0);
@@ -125,37 +102,16 @@ const Products = () => {
     const handleCheckout = async () => {
         if (cart.length === 0) return;
 
-        // MODO PRUEBA (Borrar al conectar Backend)
-        alert(`✅ Compra simulada por ${formatPrice(getTotalPrice())}`);
-        setCart([]);
-        setIsCartOpen(false);
-        fetchProducts();
-        return;
-
-        // MODO REAL (Descomentar al conectar Backend)
-        /*
-        const token = localStorage.getItem('token');
-        const compraData = { items: cart.map(item => ({ productoId: item.id, cantidad: item.quantity })) };
         try {
-            const response = await fetch(`${API_URL}/api/compra`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': token ? `Bearer ${token}` : '' },
-                body: JSON.stringify(compraData)
-            });
-            if (response.ok) {
-                alert(`✅ Compra exitosa por ${formatPrice(getTotalPrice())}`);
-                setCart([]);
-                setIsCartOpen(false);
-                fetchProducts();
-            } else {
-                const errorText = await response.text();
-                alert('❌ Error: ' + errorText);
-            }
+            const orden = await checkout();
+            alert(`✅ Compra exitosa! Orden #${orden.id}`);
+            setCart([]);
+            setIsCartOpen(false);
+            fetchProducts(); // Actualizar stock visualmente
         } catch (error) {
             console.error(error);
-            alert('❌ Error de conexión');
+            alert('❌ Error al procesar la compra.');
         }
-        */
     };
 
     return (
@@ -198,7 +154,7 @@ const Products = () => {
 
                                     <div className="card-info">
                                         <h3>{product.name}</h3>
-                                        <p className="category-tag">{product.category}</p>
+                                        <p className="category-tag">{product.category || 'General'}</p>
                                         <div className="price-row">
                                             <span className="price-tag">{formatPrice(product.price)}</span>
                                         </div>
@@ -235,22 +191,17 @@ const Products = () => {
                                 <>
                                     <div className="cart-items">
                                         {cart.map(item => (
-                                            <div key={item.id} className="cart-item">
+                                            <div key={item.cartItemId} className="cart-item">
                                                 <div className="cart-item-info">
                                                     <span className="cart-item-name">{item.name}</span>
                                                 </div>
                                                 <div className="cart-controls-mini">
-                                                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                                                    <span>{item.quantity}</span>
-                                                    <button
-                                                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                        disabled={item.quantity >= (getAvailableStock(item.id) + item.quantity)}
-                                                    >+</button>
+                                                    <span>Cant: {item.quantity}</span>
                                                 </div>
                                                 <div className="cart-item-price">
                                                     {formatPrice(item.price * item.quantity)}
                                                 </div>
-                                                <button onClick={() => removeFromCart(item.id)} className="btn-trash">❌</button>
+                                                <button onClick={() => removeFromCart(item.cartItemId)} className="btn-trash">❌</button>
                                             </div>
                                         ))}
                                     </div>
@@ -258,7 +209,7 @@ const Products = () => {
                                         <h3>Total: <span className="neon-text">{formatPrice(getTotalPrice())}</span></h3>
                                     </div>
                                     <div className="cart-actions">
-                                        <button className="btn-vaciar-carrito" onClick={() => setCart([])}>Vaciar</button>
+                                        <button className="btn-vaciar-carrito" onClick={() => setCart([])}>Ocultar</button>
                                         <button className="btn-comprar" onClick={handleCheckout}>CONFIRMAR COMPRA</button>
                                     </div>
                                 </>

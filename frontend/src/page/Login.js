@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API_URL from '../utils/apiconfig';
+// IMPORTAMOS SERVICIOS Y UTILS
+import { login } from '../service/auth';
+import { isAdmin } from '../service/auth'; 
 import '../css/style.css';
 
 const Login = () => {
@@ -20,10 +22,7 @@ const Login = () => {
       [name]: value,
     });
     if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: ''
-      });
+      setErrors({ ...errors, [name]: '' });
     }
   };
 
@@ -42,65 +41,35 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
-    try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password
-        })
-      });
+  try {
+    // ✅ CORREGIDO: Enviar objeto con email y password
+    await login({
+      email: formData.email,
+      password: formData.password
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-
-        // ✅ Guardar token y usuario (CLAVE PARA ProtectedRoute)
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('usuario', JSON.stringify({
-          id: data.id,
-          nombre: data.nombre,
-          rol: data.rol
-        }));
-
-        // ✅ Redirección SEGÚN ROL
-        if (data.rol === "ADMIN") {
-          navigate("/admin/productos");
-        } else {
-          navigate("/productos");
-        }
-
-      } else {
-        let errorMessage = "Credenciales incorrectas";
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorData;
-        } catch {
-          const errorText = await response.text();
-          if (errorText) errorMessage = errorText;
-        }
-        alert(`❌ ${errorMessage}`);
-      }
-    } catch (error) {
-      alert(
-          `Error al conectar con el servidor.\n\n` +
-          `Verifica:\n` +
-          `1. Backend activo\n` +
-          `2. API_URL correcta\n` +
-          `3. CORS`
-      );
-    } finally {
-      setIsSubmitting(false);
+    // Verificamos el rol usando el token decodificado (más seguro)
+    if (isAdmin()) {
+        navigate("/admin/productos");
+    } else {
+        navigate("/productos");
     }
-  };
+
+  } catch (error) {
+    let errorMessage = "Credenciales incorrectas";
+    if (error.response && error.response.data) {
+        errorMessage = error.response.data.message || errorMessage;
+    }
+    alert(`❌ ${errorMessage}`);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
       <div className="register-container">

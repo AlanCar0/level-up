@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { validarRut, validarCorreo } from '../utils/validarRut.js';
 import { useNavigate } from 'react-router-dom';
-import API_URL from '../utils/apiconfig.js';
+// IMPORTAMOS SERVICIO
+import { register } from '../service/auth';
 import '../css/style.css';
 
 const Register = () => {
@@ -22,16 +23,14 @@ const Register = () => {
   const [statusMessage, setStatusMessage] = useState(null);
 
   /* =====================
-     UTILIDADES FORMATO
+     UTILIDADES FORMATO (INTACTAS)
   ====================== */
 
   const formatRutVisual = (value) => {
     const clean = value.replace(/[^0-9kK]/g, '').toUpperCase();
     if (clean.length <= 1) return clean;
-
     let body = clean.slice(0, -1);
     const dv = clean.slice(-1);
-
     body = body.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return `${body}-${dv}`;
   };
@@ -42,12 +41,10 @@ const Register = () => {
   const formatPhoneVisual = (value) => {
     let clean = value.replace(/\D/g, '');
     if (clean.startsWith('56')) clean = clean.slice(2);
-
     let formatted = '+56 ';
     if (clean.length > 0) formatted += clean.slice(0, 1);
     if (clean.length > 1) formatted += ' ' + clean.slice(1, 5);
     if (clean.length > 5) formatted += ' ' + clean.slice(5, 9);
-
     return formatted.trim();
   };
 
@@ -64,7 +61,7 @@ const Register = () => {
   };
 
   /* =====================
-     HANDLERS
+     HANDLERS (INTACTOS)
   ====================== */
 
   const handleChange = (e) => {
@@ -89,7 +86,6 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
     if (!formData.rut || !validarRut(cleanRutBackend(formData.rut)))
       newErrors.rut = 'RUT inválido';
@@ -101,13 +97,12 @@ const Register = () => {
       newErrors.password = 'Contraseña muy corta';
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = 'Las contraseñas no coinciden';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   /* =====================
-     SUBMIT
+     SUBMIT (LÓGICA ACTUALIZADA)
   ====================== */
 
   const handleSubmit = async (e) => {
@@ -119,42 +114,32 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      // --- CAMBIO: USAR SERVICIO ---
+      await register({
           nombre: formData.nombre,
           rut: cleanRutBackend(formData.rut),
           email: formData.email,
-          numero: cleanPhoneBackend(formData.numero),
+          phone: cleanPhoneBackend(formData.numero),
           password: formData.password
-        })
       });
 
-      if (response.ok) {
-        setStatusMessage({
-          type: 'success',
-          text: '🎉 Registro exitoso. Redirigiendo al login...'
-        });
+      setStatusMessage({
+        type: 'success',
+        text: '🎉 Registro exitoso. Redirigiendo al login...'
+      });
 
-        setTimeout(() => navigate('/login'), 1500);
-      } else {
-        const text = await response.text();
-        setStatusMessage({ type: 'error', text });
-      }
-    } catch {
+      setTimeout(() => navigate('/login'), 1500);
+
+    } catch (error) {
+      const message = error.response?.data?.message || 'Error de conexión con el servidor';
       setStatusMessage({
         type: 'error',
-        text: '❌ Error de conexión con el servidor'
+        text: `❌ ${message}`
       });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  /* =====================
-     JSX
-  ====================== */
 
   return (
       <div className="register-container">

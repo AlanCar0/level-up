@@ -1,29 +1,22 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { getPayload } from '../service/auth'; // CORREGIDO: Apunta a service, no utils
 
-const ProtectedRoute = ({ role }) => {
-    const token = localStorage.getItem('token');
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
+const ProtectedRoute = ({ children, requireAdmin }) => {
+    const user = getPayload(); // Decodifica el token
 
-    // 🔒 No logueado
-    if (!token || !usuario) {
+    // 1. Si no hay token o expiró -> Login
+    if (!user) {
         return <Navigate to="/login" replace />;
     }
 
-    // 🚫 Rol incorrecto
-    if (role && usuario.rol !== role) {
-        return (
-            <Navigate
-                to="/"
-                replace
-                state={{
-                    error: '⛔ Acceso denegado: no tienes permisos de administrador'
-                }}
-            />
-        );
+    // 2. Si la ruta requiere Admin y el token dice que no es Admin -> Productos (o Home)
+    if (requireAdmin && user.role !== 'ROLE_ADMIN') {
+        return <Navigate to="/productos" replace />;
     }
 
-    // ✅ Acceso permitido
-    return <Outlet />;
+    // 3. Si pasa las validaciones, renderiza el componente
+    return children;
 };
 
 export default ProtectedRoute;

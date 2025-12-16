@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // IMPORTAMOS SERVICIOS Y UTILS
-import { login } from '../service/auth';
-import { isAdmin } from '../service/auth'; 
+import { login, getCurrentUser, isAdmin } from '../service/auth'; // ✅ Agregar getCurrentUser
 import '../css/style.css';
 
 const Login = () => {
@@ -40,36 +39,43 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // ✅ AGREGAR handleSubmit QUE FALTA
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  try {
-    // ✅ CORREGIDO: Enviar objeto con email y password
-    await login({
-      email: formData.email,
-      password: formData.password
-    });
+    try {
+      // ✅ Enviar objeto correctamente
+      await login({
+        email: formData.email,
+        password: formData.password
+      });
 
-    // Verificamos el rol usando el token decodificado (más seguro)
-    if (isAdmin()) {
+      // ✅ Obtener usuario actualizado después del login
+      const currentUser = getCurrentUser();
+      
+      if (isAdmin()) {
         navigate("/admin/productos");
-    } else {
+      } else {
         navigate("/productos");
-    }
+      }
 
-  } catch (error) {
-    let errorMessage = "Credenciales incorrectas";
-    if (error.response && error.response.data) {
-        errorMessage = error.response.data.message || errorMessage;
+    } catch (error) {
+      let errorMessage = "Credenciales incorrectas";
+      if (error.response && error.response.data) {
+        if (error.response.status === 401) {
+          errorMessage = "Email o contraseña incorrectos";
+        } else {
+          errorMessage = error.response.data.message || errorMessage;
+        }
+      }
+      alert(`❌ ${errorMessage}`);
+    } finally {
+      setIsSubmitting(false);
     }
-    alert(`❌ ${errorMessage}`);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   return (
       <div className="register-container">

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// IMPORTAMOS SERVICIOS
 import { getAllProducts } from '../service/product';
 import { addToCart as apiAddToCart, getCart, removeItem } from '../service/cart';
 import { checkout } from '../service/orders';
@@ -10,6 +9,7 @@ const Products = () => {
     const [cart, setCart] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     // --- CARGAR PRODUCTOS (BACKEND) ---
     const fetchProducts = async () => {
@@ -18,28 +18,33 @@ const Products = () => {
             setProducts(data);
         } catch (err) {
             console.error("Error cargando productos:", err);
+        } finally {
+            setLoading(false);
         }
     };
 
     // --- CARGAR CARRITO (BACKEND) ---
     const fetchCart = async () => {
-        // Solo intentamos cargar si el usuario está logueado
         if (!isUser()) return;
 
         try {
             const cartDto = await getCart();
-            // Mapeamos los datos del DTO para que calcen con tu diseño visual
-            const mappedItems = cartDto.items.map(item => ({
-                id: item.productId,        // ID del producto para lógica de stock
-                cartItemId: item.id,       // ID del item en el carro para borrar
-                name: item.productName,
-                price: item.price,
-                quantity: item.quantity,
-                image: item.image || "https://via.placeholder.com/300" // Fallback si no viene imagen
-            }));
-            setCart(mappedItems);
+            if (cartDto && cartDto.items) {
+                const mappedItems = cartDto.items.map(item => ({
+                    id: item.productId,
+                    cartItemId: item.id,
+                    name: item.productName,
+                    price: item.price,
+                    quantity: item.quantity,
+                    image: item.image || "https://via.placeholder.com/300"
+                }));
+                setCart(mappedItems);
+            } else {
+                setCart([]); // Carrito vacío
+            }
         } catch (error) {
-            console.log("Carrito vacío o sesión expirada");
+            console.log("Error cargando carrito:", error);
+            setCart([]);
         }
     };
 
@@ -69,13 +74,11 @@ const Products = () => {
         }
 
         try {
-            // Llamada al backend
             await apiAddToCart(product.id, 1);
-            // Actualizamos la vista recargando el carrito
-            fetchCart();
+            await fetchCart(); // ✅ Recargar carrito después de agregar
             alert('✅ Producto agregado al carro');
         } catch (error) {
-            console.error(error);
+            console.error("Error agregando al carrito:", error);
             alert('❌ Error al agregar producto');
         }
     };
@@ -83,16 +86,18 @@ const Products = () => {
     const removeFromCart = async (cartItemId) => {
         try {
             await removeItem(cartItemId);
-            fetchCart();
+            await fetchCart(); // ✅ Recargar carrito después de eliminar
         } catch (error) {
-            console.error(error);
+            console.error("Error eliminando del carrito:", error);
+            alert('❌ Error al eliminar producto');
         }
     };
 
-    // Nota: El backend básico no tiene endpoint de update quantity (+ / -)
-    // Para no romper tu UI, dejamos los botones pero con alerta o desactivados
-    const updateQuantity = (productId, newQuantity) => {
-        alert("Para cambiar cantidad, elimina el item o agrega más desde el catálogo.");
+    const handleClearCart = () => {
+        // Esto solo vacía el estado local, no el backend
+        // Si quieres vaciar el backend, necesitas un endpoint /cart/clear
+        setCart([]);
+        setIsCartOpen(false);
     };
 
     const getTotalItems = () => cart.reduce((total, item) => total + item.quantity, 0);
@@ -100,19 +105,32 @@ const Products = () => {
     const formatPrice = (price) => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(price);
 
     const handleCheckout = async () => {
-        if (cart.length === 0) return;
+        if (cart.length === 0) {
+            alert('❌ El carrito está vacío');
+            return;
+        }
+
+        if (!isUser()) {
+            alert('❌ Debes iniciar sesión para comprar');
+            return;
+        }
 
         try {
             const orden = await checkout();
             alert(`✅ Compra exitosa! Orden #${orden.id}`);
-            setCart([]);
+            setCart([]); // Vaciar carrito local
             setIsCartOpen(false);
-            fetchProducts(); // Actualizar stock visualmente
+            fetchProducts(); // Actualizar stock
+            fetchCart(); // Recargar carrito (debería estar vacío ahora)
         } catch (error) {
-            console.error(error);
-            alert('❌ Error al procesar la compra.');
+            console.error("Error en checkout:", error);
+            alert('❌ Error al procesar la compra');
         }
     };
+
+    if (loading) {
+        return <div className="loading">Cargando productos...</div>;
+    }
 
     return (
         <>
@@ -138,7 +156,6 @@ const Products = () => {
 
                             return (
                                 <div key={product.id} className={`gamer-product-card ${isOutOfStock ? 'card-disabled' : ''}`}>
-                                    {/* Badge Stock */}
                                     <div className="card-overlay">
                                         {isOutOfStock
                                             ? <span className="badge-agotado">AGOTADO</span>
@@ -149,7 +166,7 @@ const Products = () => {
                                     </div>
 
                                     <div className="card-image-box">
-                                        <img src={product.image} alt={product.name} />
+                                        <img src={product.image || "https://via.placeholder.com/300"} alt={product.name} />
                                     </div>
 
                                     <div className="card-info">
@@ -162,9 +179,10 @@ const Products = () => {
                                         <button
                                             className={`btn-add-gamer ${isOutOfStock ? 'disabled' : ''}`}
                                             onClick={() => addToCart(product)}
-                                            disabled={isOutOfStock}
+                                            disabled={isOutOfStock || !isUser()}
                                         >
-                                            {isOutOfStock ? 'SIN STOCK' : 'AÑADIR AL CARRO ✚'}
+                                            {!isUser() ? 'INICIA SESIÓN' : 
+                                             isOutOfStock ? 'SIN STOCK' : 'AÑADIR AL CARRO ✚'}
                                         </button>
                                     </div>
                                 </div>
@@ -194,6 +212,7 @@ const Products = () => {
                                             <div key={item.cartItemId} className="cart-item">
                                                 <div className="cart-item-info">
                                                     <span className="cart-item-name">{item.name}</span>
+                                                    <span className="cart-item-price-unit">{formatPrice(item.price)} c/u</span>
                                                 </div>
                                                 <div className="cart-controls-mini">
                                                     <span>Cant: {item.quantity}</span>
@@ -201,7 +220,13 @@ const Products = () => {
                                                 <div className="cart-item-price">
                                                     {formatPrice(item.price * item.quantity)}
                                                 </div>
-                                                <button onClick={() => removeFromCart(item.cartItemId)} className="btn-trash">❌</button>
+                                                <button 
+                                                    onClick={() => removeFromCart(item.cartItemId)} 
+                                                    className="btn-trash"
+                                                    title="Eliminar"
+                                                >
+                                                    ❌
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
@@ -209,8 +234,12 @@ const Products = () => {
                                         <h3>Total: <span className="neon-text">{formatPrice(getTotalPrice())}</span></h3>
                                     </div>
                                     <div className="cart-actions">
-                                        <button className="btn-vaciar-carrito" onClick={() => setCart([])}>Ocultar</button>
-                                        <button className="btn-comprar" onClick={handleCheckout}>CONFIRMAR COMPRA</button>
+                                        <button className="btn-vaciar-carrito" onClick={handleClearCart}>
+                                            Vaciar Carrito
+                                        </button>
+                                        <button className="btn-comprar" onClick={handleCheckout}>
+                                            CONFIRMAR COMPRA
+                                        </button>
                                     </div>
                                 </>
                             )}

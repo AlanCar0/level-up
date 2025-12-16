@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../css/style.css";
+import { getCurrentUser, isAdmin, logout } from "../service/auth";
 
 const Navbar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [cartCount, setCartCount] = useState(0);
+    const [user, setUser] = useState(null);
 
-    let user = null;
-    try {
-        user = JSON.parse(localStorage.getItem("usuario"));
-    } catch {
-        user = null;
-    }
+    // ✅ Obtener usuario desde auth service
+    useEffect(() => {
+        const currentUser = getCurrentUser();
+        setUser(currentUser);
+    }, [location]);
 
     const isProductsPage = location.pathname === "/productos";
-
 
     useEffect(() => {
         const readCartCount = () => {
@@ -46,16 +47,21 @@ const Navbar = () => {
         return () => window.removeEventListener("storage", onStorage);
     }, [location]);
 
+    const handleLogout = () => {
+        logout();
+        setUser(null); // ✅ Actualizar estado local
+        navigate("/login");
+    };
+
     return (
         <header className="navbar-container">
-
             {/* IZQUIERDA */}
             <nav className="nav-section nav-left">
                 <Link to="/" className="btn-nav-style">🏠 Inicio</Link>
                 <Link to="/productos" className="btn-nav-style">🕹️ Productos</Link>
                 <Link to="/contacto" className="btn-nav-style">📩 Contacto</Link>
 
-                {user?.rol === "ADMIN" && (
+                {isAdmin() && (
                     <Link to="/admin/productos" className="btn-nav-style admin-btn">
                         🛠 Admin
                     </Link>
@@ -69,8 +75,15 @@ const Navbar = () => {
 
             {/* DERECHA */}
             <div className="nav-section nav-right">
-
-                {/* 🛒 SOLO EN /productos */}
+                {/* Icono carrito */}
+                {isProductsPage && (
+                    <Link to="/carrito" className="cart-link">
+                        🛒
+                        {cartCount > 0 && (
+                            <span className="cart-badge">{cartCount}</span>
+                        )}
+                    </Link>
+                )}
 
                 {!user ? (
                     <div className="auth-buttons-group">
@@ -84,16 +97,13 @@ const Navbar = () => {
                 ) : (
                     <div className="auth-buttons-group">
                         <span className="user-greeting">
-                            👋 Hola, <strong>{user.nombre}</strong>
+                            👋 Hola, <strong>{user.email}</strong>
                         </span>
 
                         <button
                             className="btn-login"
                             style={{ backgroundColor: "#e74c3c" }}
-                            onClick={() => {
-                                localStorage.clear();
-                                window.location.href = "/login";
-                            }}
+                            onClick={handleLogout}
                         >
                             🚪 Cerrar sesión
                         </button>

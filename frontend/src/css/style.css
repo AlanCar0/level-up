@@ -17,62 +17,139 @@ body {
   padding: 0;
 }
 
-/* 
-   Header y Título
+/* =======================================================
+   HEADER Y NAVBAR (CORREGIDO Y UNIFICADO)
+   =======================================================
  */
-header {
-  background-color: #1E90FF;         /* azul eléctrico */
-  padding: 20px;
-  display: flex;                     /* activa flexbox */
-  justify-content: space-between;    /* menú a la izquierda, botón a la derecha */
+header.navbar-container {
+  background-color: #1E90FF !important; /* Azul eléctrico sólido (sin líneas raras) */
+  background-image: none !important;    /* Asegura que no haya degradados ocultos */
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   position: relative;
-}
-
-.titulo {
-  font-family: 'Orbitron', sans-serif; /* fuente futurista */
-  color: #FFFFFF;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  width: 100%;
+  box-sizing: border-box; /* Evita que el padding rompa el ancho */
+  z-index: 100;
   margin: 0;
-  font-size: 2.5rem;                 /* tamaño grande para resaltar */
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
-/* 
-   Menú de Navegación
+/* Secciones del Navbar para alinear correctamente */
+.nav-section {
+  display: flex;
+  align-items: center;
+  flex: 1; /* Truco para que el título quede centrado perfecto */
+}
+
+/* IZQUIERDA: Botones de navegación */
+.nav-section.nav-left {
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+/* CENTRO: Título */
+.nav-section.nav-center {
+  justify-content: center;
+  text-align: center;
+}
+
+/* DERECHA: Auth y Carrito */
+.nav-section.nav-right {
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+/* Título con Tipografía Antigua (Orbitron) */
+.titulo {
+  font-family: 'Orbitron', sans-serif !important;
+  color: #FFFFFF;
+  font-size: 2.2rem;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  position: static;
+  transform: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Estilo de los botones de la izquierda (Inicio, Productos, Contacto) */
+.btn-nav-style {
+  text-decoration: none;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif; /* Misma fuente que el título */
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.25); /* Fondo sutil */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-nav-style:hover {
+  background-color: #39FF14; /* Verde neón al pasar el mouse */
+  color: #000;
+  box-shadow: 0 0 15px #39FF14;
+  transform: translateY(-2px);
+  border-color: #39FF14;
+}
+
+/* Botón Admin */
+.btn-nav-style.admin-btn {
+  border-color: #FFD700;
+  color: #FFD700;
+}
+.btn-nav-style.admin-btn:hover {
+  background-color: #FFD700;
+  color: #000;
+}
+
+/* Contenedor de botones de login/registro */
+.auth-buttons-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* Menú de Navegación (Legacy - por si acaso se usa en otro lado)
 */
 nav ul {
-  list-style: none;                   /* quitar puntos de la lista */
-  display: flex;                      /* organizar horizontalmente */
-  gap: 30px;                          /* espacio entre enlaces */
+  list-style: none;
+  display: flex;
+  gap: 30px;
   align-items: center;
   padding: 0;
   margin: 0;
 }
 
 nav ul li a {
-  text-decoration: none;             /* quitar subrayado */
-  color: #39FF14;                    /* verde neón */
+  text-decoration: none;
+  color: #39FF14;
   font-weight: bold;
   padding: 10px 20px;
   border-radius: 8px;
   font-family: 'Orbitron', sans-serif;
-  transition: all 0.3s ease;         /* animaciones suaves */
+  transition: all 0.3s ease;
 }
 
 nav ul li a:hover {
-  background-color: #39FF14;         /* verde neón al pasar mouse */
-  color: #000000;                     /* texto negro sobre verde */
-  transform: scale(1.1);              /* efecto zoom */
-  box-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14; /* resplandor */
+  background-color: #39FF14;
+  color: #000000;
+  transform: scale(1.1);
+  box-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14;
 }
 
 /*
    Main
 */
 main {
-  display: flex;                     
+  display: flex;
   flex-direction: column;            /* apila secciones verticalmente */
   align-items: center;               /* centra horizontalmente */
   justify-content: center;           /* centra verticalmente */
@@ -81,8 +158,7 @@ main {
   padding: 20px;
 }
 
-/* 
-   Productos
+/* Productos
  */
 .productos-container {
   display: grid;
@@ -232,8 +308,7 @@ main {
   box-shadow: none !important;
 }
 
-/* 
-   Texto Secundario
+/* Texto Secundario
 */
 .texto-secundario {
   color: #D3D3D3;
@@ -242,36 +317,35 @@ main {
 
 /* Carrusel básico */
 .carrusel-css {
-    width: 676px;      
-    height: 423px;
-    margin: 40px auto;
-    overflow: hidden;
-    position: relative;
+  width: 676px;
+  height: 423px;
+  margin: 40px auto;
+  overflow: hidden;
+  position: relative;
 }
 
 .carrusel-css .slides {
-    display: flex;
-    width: 100%;  /* 3 imágenes → 300% del contenedor */
-    animation: mover 9s infinite;
+  display: flex;
+  width: 100%;  /* 3 imágenes → 300% del contenedor */
+  animation: mover 9s infinite;
 }
 
 .carrusel-css .slides img {
-    width: 100%;              /* cada imagen ocupa 100% del contenedor visible */
-    flex-shrink: 0;
-    object-fit: contain;       /* cambia cover → contain para que se vea completa */
-    background-color: #000;
+  width: 100%;              /* cada imagen ocupa 100% del contenedor visible */
+  flex-shrink: 0;
+  object-fit: contain;       /* cambia cover → contain para que se vea completa */
+  background-color: #000;
 }
 
 /* Animación */
 @keyframes mover {
-    0% { transform: translateX(0%); }
-    33% { transform: translateX(-100%); }
-    66% { transform: translateX(-200%); }
-    100% { transform: translateX(0%); }
+  0% { transform: translateX(0%); }
+  33% { transform: translateX(-100%); }
+  66% { transform: translateX(-200%); }
+  100% { transform: translateX(0%); }
 }
 
-/* 
-   Footer
+/* Footer
 */
 footer {
   background-color: #111;
@@ -290,7 +364,7 @@ section.info-contacto{
   font-weight: bold;
   font-family: 'Orbitron', sans-serif;
   list-style: none;
-  text-decoration: none; 
+  text-decoration: none;
 }
 
 section.info-contacto ul {
@@ -419,13 +493,24 @@ section.ctform{
   font-family: 'Orbitron', sans-serif;
   font-weight: bold;
   transition: all 0.3s ease;
-  margin-right: 20px;
+  /* El margin se ajusta en el navbar nuevo automáticamente */
 }
 
 .btn-carrito:hover {
   background: #1E90FF;
   color: #fff;
   box-shadow: 0 0 15px #1E90FF;
+}
+
+/* Badge del carrito (contador) */
+.cart-badge {
+  background-color: #ff4444;
+  color: white;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 5px;
+  vertical-align: top;
 }
 
 /* Popup del carrito */
@@ -675,7 +760,7 @@ section.ctform{
 
 /* ========== Panel ========== */
 .admin-panel {
-  background: #2c3e50 !important; 
+  background: #2c3e50 !important;
   color: white !important;
   padding: 2rem !important;
   border-radius: 10px !important;
@@ -697,49 +782,56 @@ section.ctform{
 }
 
 
-@media (max-width: 768px) {
-  header {
+/* Media Queries generales */
+@media (max-width: 1000px) {
+  header.navbar-container {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
   }
-  
+
+  .nav-section {
+    width: 100%;
+    justify-content: center !important;
+  }
+
   .titulo {
     position: static;
     transform: none;
     text-align: center;
     order: -1;
     font-size: 2rem;
+    margin-bottom: 5px;
   }
-  
+
   nav ul {
     flex-direction: column;
     gap: 0.5rem;
     text-align: center;
   }
-  
+
   .auth-buttons {
     justify-content: center;
   }
-  
+
   .carrusel-css {
     width: 100%;
     height: 250px;
   }
-  
+
   main {
     padding: 1rem;
   }
-  
+
   .productos-container {
     grid-template-columns: 1fr;
   }
-  
+
   .cart-popup {
     width: 95%;
     padding: 15px;
   }
-  
+
   .cart-actions {
     flex-direction: column;
   }
@@ -749,12 +841,12 @@ section.ctform{
   .titulo {
     font-size: 1.5rem;
   }
-  
+
   nav ul li a {
     padding: 8px 16px;
     font-size: 0.9rem;
   }
-  
+
   .btn-carrito, .btn-login, .btn-register {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
@@ -998,15 +1090,15 @@ section.ctform{
   .contact-content {
     grid-template-columns: 1fr;
   }
-  
+
   .contact-hero {
     padding: 2rem 1rem;
   }
-  
+
   .hero-content h1 {
     font-size: 2rem;
   }
-  
+
   .form-section, .info-section {
     padding: 1.5rem;
   }
@@ -1116,20 +1208,20 @@ section.ctform{
     margin: 2rem auto;
     padding: 0 1rem;
   }
-  
+
   .maps-container h2 {
     font-size: 1.8rem;
   }
-  
+
   .location-details {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .map-wrapper {
     border-width: 2px;
   }
-  
+
   .google-map {
     height: 300px;
   }
@@ -1148,7 +1240,7 @@ section.ctform{
     padding: 2rem 1rem;
     margin: 2rem auto;
   }
-  
+
   .google-map {
     height: 250px;
   }
@@ -1362,15 +1454,15 @@ section.ctform{
   .register-container {
     padding: 1rem;
   }
-  
+
   .register-card {
     padding: 2rem;
   }
-  
+
   .register-header h1 {
     font-size: 1.8rem;
   }
-  
+
   .register-icon {
     font-size: 3rem;
   }
@@ -1380,15 +1472,15 @@ section.ctform{
   .register-card {
     padding: 1.5rem;
   }
-  
+
   .register-header h1 {
     font-size: 1.6rem;
   }
-  
+
   .form-input {
     padding: 0.8rem;
   }
-  
+
   .submit-btn {
     padding: 1rem;
     font-size: 1rem;
@@ -1502,7 +1594,7 @@ section.ctform{
     grid-template-columns: 1fr;
     gap: 0.8rem;
   }
-  
+
   .back-button {
     position: relative;
     top: auto;
@@ -1517,7 +1609,7 @@ section.ctform{
     font-size: 0.8rem;
     padding: 0.4rem 0.8rem;
   }
-  
+
   .password-toggle {
     font-size: 1rem;
     right: 8px;
@@ -1551,12 +1643,12 @@ section.ctform{
     align-items: center;
     width: 100%;
   }
-  
+
   .header-right-section .auth-buttons {
     justify-content: center;
     width: 100%;
   }
-  
+
   .header-right-section .btn-login,
   .header-right-section .btn-register {
     flex: 1;
@@ -1571,3 +1663,1008 @@ section.ctform{
     font-size: 0.8rem;
   }
 }
+
+.alert {
+  margin: 20px auto;
+  padding: 15px 20px;
+  max-width: 600px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.alert.error {
+  background: #2b0000;
+  color: #ff4d4d;
+  border: 1px solid #ff4d4d;
+}
+
+.alert.success {
+  background: #002b00;
+  color: #4dff4d;
+  border: 1px solid #4dff4d;
+}
+
+
+.password-strength {
+  height: 6px;
+  background: #222;
+  border-radius: 10px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.strength-bar {
+  height: 100%;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.level-0 { width: 10%; background: #ff0033; }
+.level-1 { width: 25%; background: #ff6600; }
+.level-2 { width: 50%; background: #ffcc00; }
+.level-3 { width: 75%; background: #00ff88; }
+.level-4 { width: 100%; background: #00ffea; }
+
+.strength-text {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+/* Animación gamer */
+.register-card {
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-greeting {
+  color: #00ff9c;
+  font-weight: 600;
+  margin-right: 10px;
+  text-shadow: 0 0 6px rgba(0, 255, 156, 0.6);
+}
+
+
+
+
+/* =======================================================
+   ESTILO GAMER FINAL (RESTAURACIÓN MODO OSCURO)
+   ======================================================= */
+
+/* 1. Fondo oscuro para la cabecera "Contáctanos" */
+.contact-hero {
+  /* Fondo casi negro con el degradado sutil encima */
+  background: linear-gradient(135deg, rgba(30, 144, 255, 0.1) 0%, rgba(57, 255, 20, 0.1) 100%), #050505 !important;
+  border-bottom: 1px solid #39FF14;
+}
+
+.contact-hero h1 {
+  color: #FFFFFF !important;
+}
+
+.contact-hero p {
+  color: #cccccc !important;
+}
+
+/* 2. Tarjetas del Formulario y Contacto (Lado Izq y Der) */
+.form-section,
+.info-section,
+.form-card,
+.info-card {
+  background-color: #0b0b0b !important; /* Fondo Negro Profundo */
+  border: 1px solid #39FF14;            /* Borde Verde Neón */
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.15); /* Resplandor suave */
+  color: #fff;
+}
+
+/* 3. Títulos dentro de las tarjetas */
+.form-header h2,
+.info-card h2 {
+  color: #FFFFFF !important; /* Título blanco */
+}
+
+.form-header h2::before,
+.info-card h2::before {
+  /* Opcional: Iconos si los usas */
+  filter: none;
+}
+
+/* 4. INPUTS (Donde escribes): Fondo Negro, Borde Verde */
+.form-group input,
+.form-group textarea {
+  background-color: #000000 !important; /* Fondo NEGRO */
+  color: #39FF14 !important;            /* Texto VERDE al escribir */
+  border: 1px solid #333 !important;
+  border-bottom: 1px solid #39FF14 !important; /* Línea verde abajo */
+}
+
+/* El texto de ayuda (placeholder) en gris */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #666666 !important;
+}
+
+/* Etiquetas (Nombre, Email, Asunto) en Verde */
+.form-group label {
+  color: #39FF14 !important;
+  font-weight: bold;
+}
+
+/* 5. Sección de Información (Derecha) */
+.contact-method h3 {
+  color: #39FF14 !important; /* Títulos (WhatsApp, Correo) en Verde */
+}
+
+.contact-method p,
+.contact-method span {
+  color: #dddddd !important; /* Texto de info en gris claro/blanco */
+}
+
+.contact-method {
+  background: rgba(255, 255, 255, 0.03); /* Fondo muy sutil */
+  border-left: 3px solid #39FF14;
+}
+
+/* 6. Mapa y FAQ (Fondo Oscuro también) */
+.maps-section,
+.faq-section {
+  background-color: transparent !important;
+}
+
+.location-info,
+.transport-info,
+.faq-item {
+  background-color: #0b0b0b !important;
+  border: 1px solid #39FF14 !important;
+  color: #fff !important;
+}
+
+/*aaaaaaaaaaaaaaaaaaaaaaaaaaa*/
+
+/* =======================================================
+   ESTILOS HOME (GAMER STYLE)
+   ======================================================= */
+
+/* 1. Contenedor principal */
+.home-container {
+  background-color: #000000;
+  min-height: 100vh;
+}
+
+/* 2. Ajustes del Carrusel y Overlay */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 500px; /* Altura fija para el banner */
+  overflow: hidden;
+  border-bottom: 2px solid #39FF14; /* Línea verde debajo del carrusel */
+}
+
+.carrusel-css, .slides, .slides img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover; /* Asegura que la imagen cubra todo sin deformarse */
+}
+
+/* El texto encima de la imagen */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Oscurece la imagen para leer el texto */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+}
+
+.hero-overlay h1 {
+  font-size: 3.5rem;
+  margin-bottom: 10px;
+  text-shadow: 0 0 15px #39FF14;
+}
+
+.hero-overlay p {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+/* Botón de Llamada a la Acción */
+/* Botón de Llamada a la Acción (Actualizado para Link) */
+.cta-btn {
+  display: inline-block; /* Importante para que respete el padding */
+  padding: 15px 40px;
+  background-color: transparent;
+  border: 2px solid #39FF14;
+  color: #39FF14;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  border-radius: 5px;
+  text-decoration: none; /* Quita el subrayado del link */
+}
+
+.cta-btn:hover {
+  background-color: #39FF14;
+  color: #000;
+  box-shadow: 0 0 20px #39FF14;
+}
+
+/* --- ESTILOS HOME (Adicionales) --- */
+.home-container { background-color: #000; min-height: 100vh; }
+.hero-section { position: relative; height: 500px; border-bottom: 2px solid #39FF14; overflow: hidden; }
+.hero-overlay { position: absolute; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; }
+.hero-overlay h1 { font-size: 3.5rem; text-shadow: 0 0 15px #39FF14; margin-bottom: 10px; }
+.hero-overlay p { font-size: 1.5rem; color: #fff; margin-bottom: 30px; }
+
+/* Botón Ver Catálogo */
+.cta-btn { display: inline-block; padding: 15px 40px; border: 2px solid #39FF14; color: #39FF14; font-size: 1.2rem; font-weight: bold; text-transform: uppercase; border-radius: 5px; text-decoration: none; transition: 0.3s; }
+.cta-btn:hover { background-color: #39FF14; color: #000; box-shadow: 0 0 20px #39FF14; }
+
+/* Tarjetas Misión/Visión */
+.about-section { padding: 60px 20px; text-align: center; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+.gamer-card { background-color: #0b0b0b; border: 1px solid #333; padding: 30px; border-radius: 15px; transition: 0.3s; }
+.gamer-card:hover { transform: translateY(-10px); border-color: #39FF14; box-shadow: 0 0 15px rgba(57, 255, 20, 0.2); }
+.card-icon { font-size: 3rem; margin-bottom: 20px; }
+.gamer-card h3 { color: #39FF14; margin-bottom: 15px; }
+.gamer-card p { color: #ccc; }
+
+/* Marcas y Testimonios */
+.brands-section { padding: 50px 0; text-align: center; border-bottom: 1px solid #333; }
+.brands-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 30px; }
+.brand-item { font-size: 2rem; font-weight: bold; color: #555; transition: 0.3s; }
+.brand-item:hover { color: #39FF14; text-shadow: 0 0 15px #39FF14; }
+
+.testimonials-section { padding: 60px 20px; text-align: center; background-color: #050505; }
+.testimonials-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 40px; }
+.testimonial-card { background-color: #111; border-left: 4px solid #39FF14; padding: 20px; width: 300px; text-align: left; border-radius: 0 10px 10px 0; }
+.testimonial-card p { color: #ddd; font-style: italic; }
+.testimonial-card span { display: block; margin-top: 15px; color: #39FF14; font-weight: bold; }
+
+/* --- BOTÓN FLOTANTE CARRITO --- */
+.cart-float-btn { position: fixed; bottom: 30px; right: 30px; background-color: #39FF14; color: #000; border: none; border-radius: 50%; width: 70px; height: 70px; font-size: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(57, 255, 20, 0.6); z-index: 1000; transition: transform 0.3s; display: flex; align-items: center; justify-content: center; }
+.cart-float-btn:hover { transform: scale(1.1); background-color: #fff; }
+.cart-count { position: absolute; top: -5px; right: -5px; background-color: red; color: white; font-size: 14px; font-weight: bold; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000; }
+
+.cta-btn:hover {
+  background-color: #39FF14;
+  color: #000;
+  box-shadow: 0 0 20px #39FF14;
+}
+
+/* 3. Sección de Tarjetas (Misión/Visión) */
+.about-section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.section-title h2 {
+  color: #fff;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #888;
+  margin-bottom: 40px;
+}
+
+/* Grid para poner las tarjetas una al lado de la otra */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsivo automático */
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Estilo específico de las tarjetas del Home */
+.gamer-card {
+  background-color: #0b0b0b;
+  border: 1px solid #333;
+  padding: 30px;
+  border-radius: 15px;
+  transition: transform 0.3s, border-color 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gamer-card:hover {
+  transform: translateY(-10px); /* Efecto de levitar */
+  border-color: #39FF14;
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.gamer-card h3 {
+  color: #39FF14;
+  margin-bottom: 15px;
+}
+
+.gamer-card p {
+  color: #ccc;
+  line-height: 1.6;
+}
+
+/* 4. Barra de Estadísticas rápida */
+.stats-section {
+  display: flex;
+  justify-content: space-around;
+  background-color: #111;
+  padding: 40px 0;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  margin-top: 40px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1E90FF; /* Azul para variar un poco del verde */
+  text-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+}
+
+.stat-label {
+  color: #fff;
+  margin-top: 5px;
+  display: block;
+}
+
+/* --- POPUP / MODAL DEL CARRITO --- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85); /* Fondo oscuro transparente */
+  display: flex; /* Flex para centrar */
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Centrado vertical */
+  z-index: 2000; /* Por encima de todo */
+  backdrop-filter: blur(5px); /* Efecto borroso de fondo */
+}
+
+.cart-popup {
+  background: #0b0b0b;
+  border: 2px solid #39FF14;
+  width: 90%;
+  max-width: 600px; /* Ancho máximo */
+  max-height: 80vh; /* Altura máxima (80% de la pantalla) */
+  overflow-y: auto; /* Scroll si hay muchos productos */
+  padding: 25px;
+  border-radius: 15px;
+  position: relative;
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.3);
+  color: #fff;
+}
+
+.btn-close-popup {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #ff4444;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* Estilos internos del carrito (lista, botones, etc) */
+.cart-items { margin-top: 20px; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 10px 0; }
+.cart-item-controls { display: flex; gap: 10px; align-items: center; }
+.cart-item-controls button { background: #333; color: #fff; border: 1px solid #555; width: 30px; height: 30px; border-radius: 5px; cursor: pointer; }
+.btn-eliminar { background: transparent !important; border: none !important; font-size: 1.2rem; }
+
+
+/* =========================================
+   ESTILO GAMER PARA PRODUCTOS (VERSION MEJORADA - ALTO CONTRASTE)
+   ========================================= */
+
+/* Fondo general de la página */
+.products-page {
+  background-color: #000000; /* Negro puro de fondo */
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+/* Banner Hero con texto más legible */
+.products-hero {
+  /* Oscurecí más la imagen de fondo (0.8) para que el texto blanco resalte */
+  background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80');
+  background-size: cover;
+  background-position: center;
+  height: 250px;
+  display: flex;
+  flex-direction: column; /* Para alinear título y subtitulo verticalmente */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-bottom: 3px solid #39FF14;
+  margin-bottom: 40px;
+}
+
+.products-hero h1 {
+  font-size: 3.5rem;
+  margin: 0;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  /* Sombra de neón para que brille y se lea bien */
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.6), 2px 2px 0px #000;
+}
+
+.products-hero p {
+  color: #e0e0e0; /* Blanco hueso, muy legible */
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 10px;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Contenedor de Grid */
+.catalog-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.catalog-header h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  border-left: 6px solid #39FF14;
+  padding-left: 20px;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* TARJETA DE PRODUCTO (Fondo mejorado) */
+.gamer-product-card {
+  background-color: #161616; /* Un gris muy oscuro, no negro total, para contraste */
+  border: 1px solid #444;    /* Borde sutil */
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Sombra para que flote */
+}
+
+.gamer-product-card:hover {
+  transform: translateY(-8px);
+  border-color: #39FF14;
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.25);
+  background-color: #1a1a1a; /* Se aclara un pelín al pasar el mouse */
+}
+
+/* Imagen */
+.card-image-box {
+  width: 100%;
+  height: 220px; /* Un poco más alta */
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #333;
+}
+
+.card-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Asegura que la foto llene el espacio */
+  transition: transform 0.5s;
+  opacity: 0.9; /* Un poco opaca para que no brille tanto si es blanca */
+}
+
+.gamer-product-card:hover .card-image-box img {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* Badges de Stock */
+.card-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.badge-ok { background: #39FF14; color: #000; padding: 4px 10px; font-weight: 800; font-size: 0.85rem; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.badge-low { background: #ffcc00; color: #000; padding: 4px 10px; font-weight: 800; font-size: 0.85rem; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+.badge-agotado { background: #ff2222; color: #fff; padding: 4px 10px; font-weight: 800; font-size: 0.85rem; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+
+/* Información (Aquí arreglamos el texto) */
+.card-info {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.card-info h3 {
+  margin: 0 0 8px 0;
+  color: #ffffff; /* Blanco puro */
+  font-size: 1.4rem; /* Letra más grande */
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+}
+
+.category-tag {
+  color: #bbbbbb; /* Gris claro (plata), mucho más legible que antes */
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.price-row {
+  margin-bottom: 20px;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+}
+
+.price-tag {
+  font-size: 1.8rem; /* Precio grande */
+  color: #39FF14;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.3);
+  display: block;
+}
+
+/* Botón Añadir Gamer */
+.btn-add-gamer {
+  width: 100%;
+  padding: 14px;
+  background: rgba(57, 255, 20, 0.05); /* Fondo muy sutil verde */
+  border: 2px solid #39FF14;
+  color: #39FF14;
+  font-weight: 900;
+  font-size: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+  letter-spacing: 1px;
+  border-radius: 6px;
+}
+
+.btn-add-gamer:hover {
+  background: #39FF14;
+  color: #000;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
+  transform: scale(1.02);
+}
+
+.btn-add-gamer.disabled {
+  border-color: #555;
+  color: #666;
+  background: transparent;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.btn-add-gamer.disabled:hover {
+  transform: none;
+  background: transparent;
+  color: #666;
+}
+
+/* Estilo para tarjeta agotada */
+.card-disabled {
+  opacity: 0.5;
+  filter: grayscale(100%); /* Poner en blanco y negro si está agotado */
+}
+
+
+/* =======================================================
+   ESTILOS CONTACTO GAMER (ALTO CONTRASTE)
+   ======================================================= */
+
+.contact-page {
+  background-color: #000000;
+  color: #fff;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+/* 1. Hero Banner Contacto */
+.contact-hero {
+  background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80'); /* Imagen de teclado/setup */
+  background-size: cover;
+  background-position: center;
+  padding: 80px 20px;
+  text-align: center;
+  border-bottom: 3px solid #39FF14;
+  margin-bottom: 40px;
+}
+
+.contact-hero h1 {
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 0 0 10px #39FF14;
+  margin-bottom: 15px;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: #ddd;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 2. Layout (Izquierda Formulario, Derecha Info) */
+.contact-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.form-section { flex: 3; min-width: 300px; }
+.info-section { flex: 2; min-width: 300px; display: flex; flex-direction: column; gap: 30px; }
+
+/* 3. Estilo General de Tarjetas Gamer */
+.gamer-card-style {
+  background-color: #161616; /* Gris oscuro elegante */
+  border: 1px solid #333;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  transition: transform 0.3s;
+}
+
+.gamer-card-style:hover {
+  border-color: #39FF14; /* Brillo verde al pasar mouse */
+}
+
+/* 4. Textos dentro de las tarjetas */
+.gamer-card-style h2 { color: #fff; border-bottom: 2px solid #39FF14; padding-bottom: 10px; display: inline-block; margin-bottom: 20px; }
+.gamer-card-style p, .gamer-card-style span { color: #ccc; }
+.gamer-card-style h3 { color: #fff; margin-bottom: 5px; }
+
+/* 5. INPUTS DEL FORMULARIO (Modo Oscuro) */
+.form-group { margin-bottom: 20px; }
+
+.form-group label {
+  display: block;
+  color: #39FF14; /* Etiqueta Verde */
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  background-color: #0a0a0a; /* Fondo casi negro */
+  border: 1px solid #444;
+  color: #fff; /* Texto blanco al escribir */
+  border-radius: 6px;
+  font-family: inherit;
+  transition: 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #39FF14;
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #555;
+}
+
+/* Botón Enviar */
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: transparent;
+  border: 2px solid #39FF14;
+  color: #39FF14;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1.1rem;
+  border-radius: 5px;
+}
+
+.submit-btn:hover {
+  background: #39FF14;
+  color: #000;
+  box-shadow: 0 0 20px #39FF14;
+}
+
+/* 6. Detalles de Contacto (Iconos) */
+.contact-method {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.method-icon {
+  font-size: 1.5rem;
+  background: rgba(57, 255, 20, 0.1);
+  padding: 10px;
+  border-radius: 50%;
+  border: 1px solid #39FF14;
+}
+
+/* 7. FAQ Grid */
+.faq-section {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.faq-item h3 {
+  color: #39FF14;
+  margin-bottom: 10px;
+}
+
+/* =======================================================
+   NUEVO ESTILO: MAPA FULL WIDTH (RECTÁNGULO GIGANTE)
+   ======================================================= */
+
+.full-width-map-container {
+  width: 100%;
+  position: relative;
+  margin-top: 60px; /* Separación del formulario */
+  border-top: 4px solid #39FF14; /* Línea neón arriba */
+  border-bottom: 4px solid #39FF14; /* Línea neón abajo */
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.3); /* Resplandor */
+}
+
+/* Título flotante sobre el mapa */
+.map-overlay-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.85); /* Fondo negro semitransparente */
+  padding: 10px 30px;
+  border-radius: 50px;
+  border: 1px solid #39FF14;
+  z-index: 10;
+  pointer-events: none; /* Para que puedas hacer click en el mapa a través del título */
+}
+
+.map-overlay-title h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px #39FF14;
+}
+
+/* Estilo del Iframe */
+.google-map-full {
+  display: block; /* Quita el espacio blanco debajo de iframes */
+  filter: invert(90%) hue-rotate(180deg) contrast(90%); /* HACK VISUAL: Convierte el mapa de Google a "Modo Oscuro" */
+  transition: filter 0.5s ease;
+}
+
+/* Al pasar el mouse, el mapa vuelve a colores originales para ver mejor */
+.full-width-map-container:hover .google-map-full {
+  filter: none;
+}
+
+/* =======================================================
+   ESTILOS ADMIN PANEL (MODO GAMER PRO)
+   ======================================================= */
+
+.admin-page {
+  background-color: #000000;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+.admin-hero {
+  background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80');
+  background-size: cover;
+  background-position: center;
+  padding: 60px 20px;
+  text-align: center;
+  border-bottom: 2px solid #39FF14;
+  margin-bottom: 40px;
+}
+
+.admin-hero h1 { font-size: 2.5rem; margin-bottom: 10px; color: #fff; }
+.admin-hero p { color: #ccc; }
+
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* Tarjetas Admin */
+.admin-card {
+  background-color: #161616;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 15px;
+}
+
+.card-header h2 { margin: 0; color: #fff; font-size: 1.5rem; }
+.badge-count { background: #333; color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.9rem; }
+
+/* Formulario Admin Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.full-width { grid-column: 1 / -1; }
+
+.admin-form input,
+.admin-form select {
+  width: 100%;
+  padding: 12px;
+  background-color: #0a0a0a;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 6px;
+  box-sizing: border-box; /* Importante para que no se salga */
+}
+
+.admin-form input:focus,
+.admin-form select:focus {
+  outline: none;
+  border-color: #39FF14;
+  box-shadow: 0 0 8px rgba(57, 255, 20, 0.2);
+}
+
+.form-actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-admin-save {
+  flex: 1;
+  padding: 12px;
+  background: #39FF14;
+  color: #000;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.btn-admin-save:hover { background: #32d611; box-shadow: 0 0 15px rgba(57, 255, 20, 0.4); }
+
+.btn-admin-cancel {
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* TABLA GAMER */
+.table-responsive { overflow-x: auto; }
+
+.gamer-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Evita que se aplaste en celular */
+}
+
+.gamer-table th {
+  text-align: left;
+  padding: 15px;
+  background-color: #0a0a0a;
+  color: #39FF14;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  border-bottom: 2px solid #333;
+}
+
+.gamer-table td {
+  padding: 15px;
+  border-bottom: 1px solid #222;
+  color: #ddd;
+  vertical-align: middle;
+}
+
+.gamer-table tr:hover { background-color: #1a1a1a; }
+
+/* Detalles Tabla */
+.table-img { width: 50px; height: 50px; border-radius: 5px; overflow: hidden; background: #000; }
+.table-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.fw-bold { font-weight: bold; color: #fff; }
+.category-badge { background: #333; color: #ccc; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+.price-text { color: #39FF14; font-weight: bold; }
+
+.stock-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; color: #000; }
+.stock-badge.ok { background: #39FF14; }
+.stock-badge.low { background: #ffaa00; }
+
+.action-buttons { display: flex; gap: 10px; }
+.btn-icon {
+  background: #222;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon:hover { transform: scale(1.1); background: #333; }
+.btn-icon.delete:hover { background: #550000; }
+
+/* Mensajes */
+.admin-alert { padding: 15px; border-radius: 6px; margin-bottom: 20px; font-weight: bold; }
+.admin-alert.success { background: rgba(57, 255, 20, 0.1); border: 1px solid #39FF14; color: #39FF14; }
+.admin-alert.error { background: rgba(255, 68, 68, 0.1); border: 1px solid #ff4444; color: #ff4444; }
